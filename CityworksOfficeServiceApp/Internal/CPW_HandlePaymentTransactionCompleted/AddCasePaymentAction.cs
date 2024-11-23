@@ -1,6 +1,5 @@
 ﻿using CityworksOfficeServiceApp.Services;
 using CPW_Cityworks.Abstractions;
-using Microsoft.Extensions.Caching.Memory;
 using XTI_Core;
 using XTI_Jobs;
 
@@ -20,7 +19,7 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
     protected override async Task Execute(CancellationToken stoppingToken, TriggeredJobTask task, JobActionResultBuilder next, HandlePaymentTransactionData data)
     {
         var handleAppliedPayment = data.GetCurrentAppliedPayment();
-        await cwService.AddCasePayment
+        var payment = await cwService.AddCasePayment
         (
             new AddCasePaymentRequest
             {
@@ -33,10 +32,15 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
             }, 
             stoppingToken
         );
+        handleAppliedPayment.CasePaymentID = payment.ID;
         data.NextAppliedPayment();
         if (data.HasCurrentAppliedPayment())
         {
             next.AddNext(HandlePaymentTransactionCompletedInfo.AddCasePayment, data);
+        }
+        else
+        {
+            next.AddNext(HandlePaymentTransactionCompletedInfo.LoadTaskResolutions, data);
         }
     }
 }

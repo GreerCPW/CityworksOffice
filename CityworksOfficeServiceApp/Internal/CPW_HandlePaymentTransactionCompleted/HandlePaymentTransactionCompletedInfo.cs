@@ -7,10 +7,14 @@ public static class HandlePaymentTransactionCompletedInfo
     public static JobKey JobKey = new("Handle PLL Payment Transaction Completed");
     public static readonly JobTaskKey LoadCaseDetail = new(nameof(LoadCaseDetail));
     public static readonly JobTaskKey AddCasePayment = new(nameof(AddCasePayment));
+    public static readonly JobTaskKey LoadTaskResolutions = new(nameof(LoadTaskResolutions));
+    public static readonly JobTaskKey ResolveCaseTask = new(nameof(ResolveCaseTask));
 
     public static readonly JobTaskKey[] AllTasks =
         [
             LoadCaseDetail,
-            AddCasePayment
+            AddCasePayment,
+            LoadTaskResolutions,
+            ResolveCaseTask
         ];
 }

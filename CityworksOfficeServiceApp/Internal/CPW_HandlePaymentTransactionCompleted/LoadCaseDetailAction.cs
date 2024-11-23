@@ -1,4 +1,5 @@
 ﻿using CityworksOfficeServiceApp.Services;
+using CPW_Cityworks.Abstractions;
 using CPW_PaymentTransaction.Abstractions;
 using CPW_PaymentTransaction.Events;
 using Microsoft.Extensions.Caching.Memory;
@@ -51,7 +52,7 @@ internal sealed class LoadCaseDetailAction : JobAction<PaymentTransactionEventDa
                         caseFeeID: caseFeeID,
                         amountPaid: appliedPayment.AmountPaid,
                         tenderTypeID: tenderType.ID,
-                        referenceInfo: $"PYMT:{data.ID:0000000}"
+                        referenceInfo: new PaymentReferenceInfo(appliedPayment.ID).Value
                     );
                     handleAppliedPayments.Add(handleAppliedPayment);
                 }

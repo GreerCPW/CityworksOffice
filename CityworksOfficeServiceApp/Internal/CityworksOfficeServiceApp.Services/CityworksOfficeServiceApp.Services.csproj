@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CPW_Cityworks.Abstractions" Version="1.0.97-dev241122115457887" />
+    <PackageReference Include="CPW_Cityworks.Abstractions" Version="1.0.97-dev241123171602925" />
   </ItemGroup>
 
 </Project>

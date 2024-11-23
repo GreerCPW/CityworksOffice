@@ -19,4 +19,5 @@ internal sealed class HandleAppliedPaymentData
     public decimal AmountPaid { get; set; }
     public long TenderTypeID { get; set; }
     public string ReferenceInfo { get; set; }
+    public long CasePaymentID { get; set; }
 }

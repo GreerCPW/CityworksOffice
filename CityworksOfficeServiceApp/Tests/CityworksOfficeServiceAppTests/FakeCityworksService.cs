@@ -99,22 +99,23 @@ public sealed class FakeCityworksService : ICityworksService
             TaskDetails: [],
             MapLayers: [],
             RelatedDocuments: [],
-            RelatedActivities: new CwActivityRelationship()
+            RelatedActivities: new CwActivityRelationship(),
+            Receipts: []
         );
         caseID++;
         caseDetails.Add(caseDetail);
         caseDetail = SetCaseData(caseDetail, "CUSTOMER", "COMM_RES", accountType.ToUpper());
         caseDetail = SetCaseData(caseDetail, "CUSTOMER", "CUS DEV NO", "");
-        caseDetail = SetCaseData(caseDetail, "CUSTOMER", "IN OR OUT", "");
+        caseDetail = SetCaseData(caseDetail, "CITY LIMIT", "IN OR OUT", "");
         caseDetail = SetCaseData(caseDetail, "INTERNAL", "SVC LOCATE", "");
         return caseDetail;
     }
 
     public CaseDetailModel LocationIsInsideTheCity(CaseDetailModel caseDetail) =>
-        SetCaseData(caseDetail, "CUSTOMER", "IN OR OUT", "Inside");
+        SetCaseData(caseDetail, "CITY LIMIT", "IN OR OUT", "Inside");
 
     public CaseDetailModel LocationIsOutsideTheCity(CaseDetailModel caseDetail) =>
-        SetCaseData(caseDetail, "CUSTOMER", "IN OR OUT", "Outside");
+        SetCaseData(caseDetail, "CITY LIMIT", "IN OR OUT", "Outside");
 
     public CaseDetailModel SetCaseData(CaseDetailModel caseDetail, string groupCode, string detailCode, string value)
     {
@@ -269,11 +270,47 @@ public sealed class FakeCityworksService : ICityworksService
         return Task.FromResult(payment);
     }
 
+    public CaseFeeModel AddWaterCapacityFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "WATER CAP", 800);
+
+    public CaseFeeModel AddWaterTapFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "WATER TAP", 1125);
+
+    public CaseFeeModel AddIrrigationCapacityFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "IRR CAP", 800);
+
+    public CaseFeeModel AddIrrigationTapFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "IRR TAP", 1125);
+
     public CaseFeeModel AddFireHydrantFee(CaseDetailModel caseDetail) =>
         AddCaseFee(caseDetail, "FIRE HYD", 3750);
 
+    public CaseFeeModel AddElectricFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "EL DEV", 400);
+
+    public CaseFeeModel AddGasServiceFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "GAS FEES", 255);
+
+    public CaseFeeModel AddSewerCapacityFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "SEWER CAP", 1200);
+
+    public CaseFeeModel AddSewerTapFee(CaseDetailModel caseDetail) =>
+        AddCaseFee(caseDetail, "SEWER TAP", 500);
+
+    public CaseTaskModel AddWaterPaidTask(CaseDetailModel caseDetail) =>
+        AddCaseTaskDetail(caseDetail, "WATER_PAID");
+
     public CaseTaskModel AddFireHydrantPaidTask(CaseDetailModel caseDetail) =>
         AddCaseTaskDetail(caseDetail, "HYD_PAID");
+
+    public CaseTaskModel AddElectricPaidTask(CaseDetailModel caseDetail) =>
+        AddCaseTaskDetail(caseDetail, "ELEC_PAID");
+
+    public CaseTaskModel AddGasPaidTask(CaseDetailModel caseDetail) =>
+        AddCaseTaskDetail(caseDetail, "GAS_PAID");
+
+    public CaseTaskModel AddSewerPaidTask(CaseDetailModel caseDetail) =>
+        AddCaseTaskDetail(caseDetail, "SEWER_PAID");
 
     public CaseTaskModel AddCaseTaskDetail(CaseDetailModel caseDetail, string taskCode)
     {

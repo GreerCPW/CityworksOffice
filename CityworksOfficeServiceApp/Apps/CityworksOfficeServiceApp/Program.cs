@@ -8,6 +8,9 @@ using XTI_Jobs.Abstractions;
 using XTI_Jobs;
 using XTI_Schedule;
 using XTI_ScheduledJobsAppClient;
+using DinkToPdf.Contracts;
+using DinkToPdf;
+using CPW_HandlePaymentTransactionCompleted;
 
 await XtiServiceAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
     .ConfigureServices((hostContext, services) =>
@@ -17,8 +20,9 @@ await XtiServiceAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
         services.AddScoped(sp => (CityworksOfficeAppApi)sp.GetRequiredService<IAppApi>());
         services.AddScheduledJobsAppClient();
         services.AddScoped<IJobDb, SjcJobDb>();
-        services.AddScoped<IncomingEventFactory>();
         services.AddScoped<EventMonitorBuilder>();
+        services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
+        services.AddScoped<HandlePaymentTransactionCompletedActionFactory>();
         services.AddAppAgenda
         (
             (sp, agenda) =>

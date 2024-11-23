@@ -30,6 +30,14 @@ public sealed class HandlePaymentTransactionCompletedActionFactory : IJobActionF
         {
             action = new AddCasePaymentAction(cwService, clock, jobTask);
         }
+        else if (jobTask.TaskKey.Equals(HandlePaymentTransactionCompletedInfo.LoadTaskResolutions))
+        {
+            action = new LoadTaskResolutionsAction(cwService, jobTask);
+        }
+        else if (jobTask.TaskKey.Equals(HandlePaymentTransactionCompletedInfo.ResolveCaseTask))
+        {
+            action = new ResolveCaseTaskAction(cwService, jobTask);
+        }
         else
         {
             throw new NotSupportedException($"Task '{jobTask.TaskKey.DisplayText}' is not supported");
