@@ -59,6 +59,7 @@ internal sealed class LoadCaseDetailAction : JobAction<PaymentTransactionEventDa
             }
             var handleTransactionData = new HandlePaymentTransactionData
             (
+                paymentTransactionID: data.ID,
                 caseID: caseID,
                 appliedPayments: handleAppliedPayments.ToArray()
             );

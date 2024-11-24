@@ -3,16 +3,18 @@
 internal sealed class HandlePaymentTransactionData
 {
     public HandlePaymentTransactionData()
-        : this(0, [])
+        : this(0, 0, [])
     {
     }
 
-    public HandlePaymentTransactionData(long caseID, HandleAppliedPaymentData[] appliedPayments)
+    public HandlePaymentTransactionData(int paymentTransactionID, long caseID, HandleAppliedPaymentData[] appliedPayments)
     {
+        PaymentTransactionID = paymentTransactionID;
         CaseID = caseID;
         AppliedPayments = appliedPayments;
     }
 
+    public int PaymentTransactionID { get; set; }
     public long CaseID { get; set; }
     public int AppliedPaymentIndex { get; set; }
     public HandleAppliedPaymentData[] AppliedPayments { get; set; }

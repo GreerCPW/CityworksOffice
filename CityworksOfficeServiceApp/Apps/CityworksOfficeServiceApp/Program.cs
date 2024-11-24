@@ -11,6 +11,8 @@ using XTI_ScheduledJobsAppClient;
 using DinkToPdf.Contracts;
 using DinkToPdf;
 using CPW_HandlePaymentTransactionCompleted;
+using CityworksOfficeServiceApp.Services;
+using CityworksOfficeServiceApp.Implementations;
 
 await XtiServiceAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
     .ConfigureServices((hostContext, services) =>
@@ -23,6 +25,7 @@ await XtiServiceAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
         services.AddScoped<EventMonitorBuilder>();
         services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         services.AddScoped<HandlePaymentTransactionCompletedActionFactory>();
+        services.AddScoped<IReceiptWriterFactory, PdfReceiptWriterFactory>();
         services.AddAppAgenda
         (
             (sp, agenda) =>

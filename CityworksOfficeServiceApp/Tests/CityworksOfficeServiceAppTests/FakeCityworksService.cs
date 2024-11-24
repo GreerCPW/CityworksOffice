@@ -1,6 +1,7 @@
 ﻿using CityworksOfficeServiceApp.Services;
 using CPW_Cityworks.Abstractions;
 using CPW_Contact;
+using XTI_App.Abstractions;
 
 namespace CityworksOfficeServiceAppTests;
 
@@ -10,11 +11,13 @@ public sealed class FakeCityworksService : ICityworksService
     private static int caseTaskID = 312;
     private static int caseFeeID = 1119;
     private static int casePaymentID = 1122;
-    private static int dataGroupID = 1;
-    private static int dataGroupDetailID = 1;
+    private static int dataGroupID = 719;
+    private static int dataGroupDetailID = 1920;
+    private static int receiptID = 1233;
     private readonly List<CwTenderTypeModel> tenderTypes = new();
     private readonly List<CaseDetailModel> caseDetails = new();
     private readonly List<CustomFieldCategoryModel> customFieldCategories = new();
+    private readonly List<CaseReceiptDetailModel> receiptDetails = new();
 
     public FakeCityworksService()
     {
@@ -382,6 +385,12 @@ public sealed class FakeCityworksService : ICityworksService
         return Task.FromResult(caseDetail);
     }
 
+    public Task<CaseModel> GetCase(long caseID, CancellationToken ct)
+    {
+        var caseDetail = GetCaseDetail(caseID);
+        return Task.FromResult(caseDetail.Case);
+    }
+
     public CaseDetailModel GetCaseDetail(CaseDetailModel caseDetail) =>
         GetCaseDetail(caseDetail.Case.ID);
 
@@ -438,4 +447,58 @@ public sealed class FakeCityworksService : ICityworksService
     public Task<CustomFieldCategoryModel[]> GetCustomFieldCategories(CancellationToken ct) =>
         Task.FromResult(customFieldCategories.ToArray());
 
+    private readonly Dictionary<long, CaseReceiptDetailModel> caseReceipts = new();
+
+    public Task<CaseReceiptDetailModel> AddCaseReceipt(AddCaseReceiptRequest addRequest, CancellationToken ct)
+    {
+        if (caseReceipts.ContainsKey(addRequest.CaseID))
+        {
+            caseReceipts.Remove(addRequest.CaseID);
+        }
+        var caseDetail = GetCaseDetail(addRequest.CaseID);
+        var payments = addRequest.CasePaymentIDs.Select(pid => caseDetail.GetPaymentOrDefault(pid)).ToArray();
+        var receiptDetail = new CaseReceiptDetailModel
+        (
+            Receipt: new
+            (
+                ID: receiptID,
+                ReceiptDate: DateTime.Now,
+                TotalAmountDue: 0,
+                TotalAmountTendered: payments.Any() ? payments.Sum(p => p.PaymentAmount) : 0,
+                FileName: $"PYMT_{addRequest.PaymentTransactionID}"
+            ),
+            TenderTypes: [],
+            Fees: []
+        );
+        receiptDetails.Add(receiptDetail);
+        caseReceipts.Add(addRequest.CaseID, receiptDetail);
+        receiptID++;
+        return Task.FromResult(receiptDetail);
+    }
+
+    public CaseReceiptDetailModel GetReceiptDetail(CaseDetailModel caseDetail)
+    {
+        if(!caseReceipts.TryGetValue(caseDetail.Case.ID, out var receiptDetail))
+        {
+            receiptDetail = new CaseReceiptDetailModel();
+        }
+        return receiptDetail;
+    }
+
+    private Dictionary<long, byte[]> receiptFiles = new();
+
+    public Task UploadCaseReceiptFile(UploadCaseReceiptRequest uploadRequest, CancellationToken ct)
+    {
+        receiptFiles.Add(uploadRequest.ReceiptID, uploadRequest.ReceiptFile.Stream.GetBytes());
+        return Task.CompletedTask;
+    }
+
+    public byte[] GetReceiptFile(CaseReceiptDetailModel receiptDetail)
+    {
+        if(!receiptFiles.TryGetValue(receiptDetail.Receipt.ID, out var bytes))
+        {
+            bytes = [];
+        }
+        return bytes;
+    }
 }

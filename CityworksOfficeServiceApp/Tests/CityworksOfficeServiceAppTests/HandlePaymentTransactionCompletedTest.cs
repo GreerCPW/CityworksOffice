@@ -4,6 +4,9 @@ using CPW_PaymentTransaction.Abstractions;
 using CPW_PaymentTransaction.Events;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using System.Collections.Immutable;
+using System.Text;
+using System.Text.Unicode;
 using XTI_Jobs;
 using XTI_Jobs.Abstractions;
 
@@ -739,6 +742,46 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedWaterPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(waterPaidTask.ID).Task;
         Assert.That(updatedWaterPaidTask.ResultCode, Is.EqualTo(""), "Should not resolve water paid when water fees are paid but not irrigation fees");
+    }
+
+    [Test]
+    public async Task ShouldAddCaseReceipt()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var fee1 = cwService.AddCaseFee(caseDetail, "BUILDERFEE", 20);
+        var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(fee1)
+            .AddAppliedPayment(11, PaymentMethod.Values.Cash)
+            .AddAppliedPayment(9, PaymentMethod.Values.Check)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData);
+        await HandlePaymentTransactionCompleted(sp);
+        var receiptDetail = cwService.GetReceiptDetail(caseDetail);
+        Assert.That(receiptDetail.Receipt.IsFound(), Is.True, "Should add receipt");
+        Assert.That(receiptDetail.Receipt.TotalAmountTendered, Is.EqualTo(20), "Should add receipt");
+    }
+
+    [Test]
+    public async Task ShouldUploadCaseReceiptFile()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var fee1 = cwService.AddCaseFee(caseDetail, "BUILDERFEE", 20);
+        var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(fee1)
+            .AddAppliedPayment(11, PaymentMethod.Values.Cash)
+            .AddAppliedPayment(9, PaymentMethod.Values.Check)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData);
+        await HandlePaymentTransactionCompleted(sp);
+        caseDetail = cwService.GetCaseDetail(caseDetail);
+        var receiptDetail = cwService.GetReceiptDetail(caseDetail);
+        var receiptBytes = cwService.GetReceiptFile(receiptDetail);
+        var receiptText = UTF8Encoding.UTF8.GetString(receiptBytes);
+        Assert.That(receiptText, Is.EqualTo(FakeReceiptWriter.Output(caseDetail.Case, receiptDetail)), "Should upload receipt file");
     }
 
     private Task<IServiceProvider> Setup(string envName = "Development")

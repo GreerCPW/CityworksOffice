@@ -9,12 +9,16 @@ public static class HandlePaymentTransactionCompletedInfo
     public static readonly JobTaskKey AddCasePayment = new(nameof(AddCasePayment));
     public static readonly JobTaskKey LoadTaskResolutions = new(nameof(LoadTaskResolutions));
     public static readonly JobTaskKey ResolveCaseTask = new(nameof(ResolveCaseTask));
+    public static readonly JobTaskKey AddCaseReceipt = new(nameof(AddCaseReceipt));
+    public static readonly JobTaskKey UploadReceiptFile = new(nameof(UploadReceiptFile));
 
     public static readonly JobTaskKey[] AllTasks =
         [
             LoadCaseDetail,
             AddCasePayment,
             LoadTaskResolutions,
-            ResolveCaseTask
+            ResolveCaseTask,
+            AddCaseReceipt,
+            UploadReceiptFile
         ];
 }

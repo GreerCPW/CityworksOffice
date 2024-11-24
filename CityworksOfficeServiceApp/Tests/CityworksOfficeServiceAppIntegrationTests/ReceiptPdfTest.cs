@@ -1,4 +1,4 @@
-﻿using CityworksOfficeServiceApp.Implementations;
+﻿using CityworksOfficeServiceApp.Services;
 using CPW_Cityworks.Abstractions;
 using DinkToPdf.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,17 +12,13 @@ internal sealed class ReceiptPdfTest
     public async Task ShouldWriteReceiptPdf()
     {
         var sp = await Setup();
-        var converter = sp.GetRequiredService<IConverter>();
-        var receiptPdf = new ReceiptPdf
+        var receiptWriterFactory = sp.GetRequiredService<IReceiptWriterFactory>();
+        var receiptWriter = receiptWriterFactory.Create
         (
-            converter,
-            new CaseDetailModel
+            new CaseModel
             {
-                Case = new CaseModel
-                {
-                    CaseNumber = "SVC-0001",
-                    CaseType = new CaseTypeModel { Description = "Install Service" }
-                }
+                CaseNumber = "SVC-0001",
+                CaseType = new CaseTypeModel { Description = "Install Service" }
             },
             new CaseReceiptDetailModel
             (
@@ -42,7 +38,7 @@ internal sealed class ReceiptPdfTest
         {
             File.Delete(receiptPath);
         }
-        var receiptContent = receiptPdf.Write();
+        var receiptContent = receiptWriter.Write();
         File.WriteAllBytes(receiptPath, receiptContent);
         Console.WriteLine(receiptPath);
     }

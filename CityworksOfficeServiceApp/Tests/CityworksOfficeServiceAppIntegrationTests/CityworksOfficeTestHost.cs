@@ -1,4 +1,6 @@
-﻿using CPW_HandlePaymentTransactionCompleted;
+﻿using CityworksOfficeServiceApp.Implementations;
+using CityworksOfficeServiceApp.Services;
+using CPW_HandlePaymentTransactionCompleted;
 using DinkToPdf;
 using DinkToPdf.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -70,6 +72,7 @@ internal sealed class CityworksOfficeTestHost
         builder.Services.AddScoped<CityworksOfficeJobSetup>();
         builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         builder.Services.AddScoped<HandlePaymentTransactionCompletedActionFactory>();
+        builder.Services.AddScoped<IReceiptWriterFactory, PdfReceiptWriterFactory>();
         if (configure != null)
         {
             configure(builder.Services);

@@ -29,7 +29,7 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
                 TenderTypeID = handleAppliedPayment.TenderTypeID,
                 ReferenceInfo = handleAppliedPayment.ReferenceInfo,
                 TimePaid = clock.Now()
-            }, 
+            },
             stoppingToken
         );
         handleAppliedPayment.CasePaymentID = payment.ID;
@@ -41,6 +41,13 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
         else
         {
             next.AddNext(HandlePaymentTransactionCompletedInfo.LoadTaskResolutions, data);
+            var addReceiptRequest = new AddCaseReceiptRequest
+            (
+                paymentTransactionID: data.PaymentTransactionID,
+                caseID: data.CaseID,
+                casePaymentIDs: data.AppliedPayments.Select(ap => ap.CasePaymentID).ToArray()
+            );
+            next.AddNext(HandlePaymentTransactionCompletedInfo.AddCaseReceipt, addReceiptRequest);
         }
     }
 }

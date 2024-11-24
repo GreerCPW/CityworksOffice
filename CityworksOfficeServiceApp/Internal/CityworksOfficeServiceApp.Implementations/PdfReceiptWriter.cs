@@ -6,16 +6,16 @@ using System.Text;
 
 namespace CityworksOfficeServiceApp.Implementations;
 
-public sealed class ReceiptPdf : IReceiptWriter
+public sealed class PdfReceiptWriter : IReceiptWriter
 {
     private readonly IConverter converter;
-    private readonly CaseDetailModel caseDetail;
+    private readonly CaseModel pllCase;
     private readonly CaseReceiptDetailModel receiptDetail;
 
-    public ReceiptPdf(IConverter converter, CaseDetailModel caseDetail, CaseReceiptDetailModel receiptDetail)
+    internal PdfReceiptWriter(IConverter converter, CaseModel pllCase, CaseReceiptDetailModel receiptDetail)
     {
         this.converter = converter;
-        this.caseDetail = caseDetail;
+        this.pllCase = pllCase;
         this.receiptDetail = receiptDetail;
     }
 
@@ -23,7 +23,7 @@ public sealed class ReceiptPdf : IReceiptWriter
     {
         var html = new StringBuilder();
         html.AppendLine("<html>");
-        html.AppendLine($"<head><title>{caseDetail.Case.CaseNumber}</title></head>");
+        html.AppendLine($"<head><title>{pllCase.CaseNumber}</title></head>");
         html.AppendLine("</html>");
         html.AppendLine("<body>");
         AppendHtmlBody(html);
@@ -59,9 +59,9 @@ public sealed class ReceiptPdf : IReceiptWriter
         AppendTableCells
         (
             html,
-            new HtmlTableCell(caseDetail.Case.CaseType.Description),
-            new HtmlTableCell(caseDetail.Case.CaseNumber),
-            new HtmlTableCell(caseDetail.Case.SubTypeDescription)
+            new HtmlTableCell(pllCase.CaseType.Description),
+            new HtmlTableCell(pllCase.CaseNumber),
+            new HtmlTableCell(pllCase.SubTypeDescription)
         );
         html.Append("</tbody>");
         html.Append("</table>");
