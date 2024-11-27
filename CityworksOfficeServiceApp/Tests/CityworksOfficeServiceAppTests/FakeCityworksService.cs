@@ -44,6 +44,7 @@ public sealed class FakeCityworksService : ICityworksService
                 ID: caseID,
                 OfficeUrl: "",
                 RespondUrl: "",
+                BusinessCaseID: 0,
                 CaseType: new CaseTypeModel(),
                 SubTypeID: 0,
                 SubTypeDescription: "",
@@ -61,7 +62,6 @@ public sealed class FakeCityworksService : ICityworksService
                 Location: location,
                 Coordinates: coords
             ),
-            BusinessCaseDetail: new BusinessCaseDetailModel(),
             EnteredBy: new CwUserModel(),
             DataGroupDetails: [],
             FeeDetails: [],
