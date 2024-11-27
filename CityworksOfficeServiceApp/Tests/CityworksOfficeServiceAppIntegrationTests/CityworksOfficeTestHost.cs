@@ -9,6 +9,7 @@ using XTI_App.Abstractions;
 using XTI_App.Api;
 using XTI_App.Extensions;
 using XTI_App.Fakes;
+using XTI_CityworksAppClient;
 using XTI_Core;
 using XTI_Core.Extensions;
 using XTI_Core.Fakes;
@@ -73,6 +74,8 @@ internal sealed class CityworksOfficeTestHost
         builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         builder.Services.AddScoped<HandlePaymentTransactionCompletedActionFactory>();
         builder.Services.AddScoped<IReceiptWriterFactory, PdfReceiptWriterFactory>();
+        builder.Services.AddCityworksAppClient();
+        builder.Services.AddScoped<ICityworksService, DefaultCityworksService>();
         if (configure != null)
         {
             configure(builder.Services);
