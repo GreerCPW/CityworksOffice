@@ -69,7 +69,10 @@ internal sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, Emp
             (
                 joined =>
                     joined.Fee.FeeAmount != joined.LineItem.AmountDue ||
-                    joined.Fee.GlAccountNumber != joined.LineItem.GlAccountNumber
+                    (
+                        joined.Fee.GlAccountNumber != joined.LineItem.GlAccountNumber && 
+                        joined.Fee.GlAccountNumber != joined.LineItem.GlAccountNumber.Replace("-000000", "")
+                    )
             )
             .Select(joined => joined.Fee)
             .ToArrayAsync();

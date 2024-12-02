@@ -47,6 +47,18 @@ await XtiServiceAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
                             );
                     }
                 );
+                agenda.AddScheduled<CityworksOfficeAppApi>
+                (
+                    (api, agendaItem) =>
+                    {
+                        agendaItem.Action(api.Receivables.AddOrUpdateReceivables)
+                            .Interval(TimeSpan.FromHours(1))
+                            .AddSchedule
+                            (
+                                Schedule.EveryDay().At(TimeRange.From(new TimeOnly(6, 0)).For(17).Hours())
+                            );
+                    }
+                );
             }
         );
         services.AddThrottledLog<CityworksOfficeAppApi>

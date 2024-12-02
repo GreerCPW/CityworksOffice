@@ -9,7 +9,7 @@ internal static class ExpandedReceivableLineItems
         select LineItemID,  
             isnull(try_cast(LineItemSourceKey as decimal(10, 0)), 0) FeeID, 
             LineItemSourceCode FeeCode, LineItemSourceDescription FeeDescription, 
-            AmountDue, GlAccountNumber, ReceivableID, 
+            AmountDue, replace(GlAccountNumber, '-000000', '') GlAccountNumber, ReceivableID, 
             isnull(try_cast(ReceivableSourceKey as decimal(10, 0)), 0) CaseID, 
             ReceivableSourceDescription CaseNumber
         from {paymentDatabaseName}.dbo.ExpandedReceivableLineItems

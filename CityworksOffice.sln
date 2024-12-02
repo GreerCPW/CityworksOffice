@@ -59,6 +59,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CPW_ExpandedCityworksDB.Sql
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CPW_ExpandedCityworksDBTool", "CityworksOfficeWebApp\Internal\CPW_ExpandedCityworksDBTool\CPW_ExpandedCityworksDBTool.csproj", "{A96FB54D-4A81-488B-A9F3-FD0D96B97E43}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{E482FA36-DB21-43D7-A14C-49A8E4B05C94}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityworksOfficeWebAppIntegrationTests", "CityworksOfficeWebApp\Tests\CityworksOfficeWebAppIntegrationTests\CityworksOfficeWebAppIntegrationTests.csproj", "{8EA4EE8C-02D3-4E47-BCCB-A5A48AEE18DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +137,10 @@ Global
 		{A96FB54D-4A81-488B-A9F3-FD0D96B97E43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A96FB54D-4A81-488B-A9F3-FD0D96B97E43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A96FB54D-4A81-488B-A9F3-FD0D96B97E43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EA4EE8C-02D3-4E47-BCCB-A5A48AEE18DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA4EE8C-02D3-4E47-BCCB-A5A48AEE18DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA4EE8C-02D3-4E47-BCCB-A5A48AEE18DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA4EE8C-02D3-4E47-BCCB-A5A48AEE18DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -161,5 +169,7 @@ Global
 		{40F19C8C-9B04-46EA-9282-0C7E7228FCA5} = {6F9FD774-5F85-4B36-A3B0-865BB028C3B2}
 		{57272690-6F1C-4FDB-B48A-EFFD0B53C2A3} = {6F9FD774-5F85-4B36-A3B0-865BB028C3B2}
 		{A96FB54D-4A81-488B-A9F3-FD0D96B97E43} = {6F9FD774-5F85-4B36-A3B0-865BB028C3B2}
+		{E482FA36-DB21-43D7-A14C-49A8E4B05C94} = {8BF20CFC-014B-43E7-8936-66B278FAC8A0}
+		{8EA4EE8C-02D3-4E47-BCCB-A5A48AEE18DF} = {E482FA36-DB21-43D7-A14C-49A8E4B05C94}
 	EndGlobalSection
 EndGlobal
