@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Description>Web App Client for $(XtiAppName) $(XtiVersion)</Description>
+		<PackageTags>$(XtiVersion);$(XtiAppName);XTI Web App Client</PackageTags>
+	</PropertyGroup>
+
+	<ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+		<PackageReference Include="XTI_WebAppClient" Version="1.8.42" />
+	</ItemGroup>
+
+</Project>
