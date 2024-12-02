@@ -20,7 +20,10 @@ public sealed partial class CityworksOfficeAppApi : AppApiWrapper
         )
     {
         createJobsGroup(sp);
+        createReceivablesGroup(sp);
     }
 
     partial void createJobsGroup(IServiceProvider sp);
+
+    partial void createReceivablesGroup(IServiceProvider sp);
 }

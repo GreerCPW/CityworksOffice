@@ -18,6 +18,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Internal\CityworksOfficeWebApp.ApiControllers\CityworksOfficeWebApp.ApiControllers.csproj" />
+		<ProjectReference Include="..\..\Internal\CPW_ExpandedCityworksDB.SqlServer\CPW_ExpandedCityworksDB.SqlServer.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

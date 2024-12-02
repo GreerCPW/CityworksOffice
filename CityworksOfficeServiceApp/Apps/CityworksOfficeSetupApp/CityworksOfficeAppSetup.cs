@@ -30,6 +30,11 @@ internal sealed class CityworksOfficeAppSetup : IAppSetup
                 ),
                 new SetUserAccessRoleRequest
                 (
+                    AppKey.WebApp("CityworksOffice"),
+                    AppRoleName.Admin
+                ),
+                new SetUserAccessRoleRequest
+                (
                     AppKey.WebApp("Scheduled Jobs"),
                     AppRoleName.Admin
                 )

@@ -4,6 +4,8 @@ using CityworksOfficeWebApp.ApiControllers;
 using XTI_Core;
 using XTI_CityworksOfficeWebAppApi;
 using XTI_App.Api;
+using CPW_ExpandedCityworksDB.SqlServer;
+using XTI_PaymentTransactionAppClient;
 
 var builder = XtiWebAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args);
 var xtiEnv = XtiEnvironment.Parse(builder.Environment.EnvironmentName);
@@ -11,6 +13,8 @@ builder.Services.ConfigureXtiCookieAndTokenAuthentication(xtiEnv, builder.Config
 builder.Services.AddScoped<AppApiFactory, CityworksOfficeAppApiFactory>();
 builder.Services.AddScoped(sp => (CityworksOfficeAppApi)sp.GetRequiredService<IAppApi>());
 builder.Services.AddCityworksOfficeAppApiServices();
+builder.Services.AddExpandedCityworksDbContextForSqlServer();
+builder.Services.AddPaymentTransactionAppClient();
 builder.Services
     .AddMvc()
     .AddJsonOptions(options =>

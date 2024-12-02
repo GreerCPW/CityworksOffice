@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\Internal\CPW_ExpandedCityworksDB.SqlServer\CPW_ExpandedCityworksDB.SqlServer.csproj" />
 		<ProjectReference Include="..\..\Internal\XTI_CityworksOfficeWebAppApi\XTI_CityworksOfficeWebAppApi.csproj" />
 	</ItemGroup>
 

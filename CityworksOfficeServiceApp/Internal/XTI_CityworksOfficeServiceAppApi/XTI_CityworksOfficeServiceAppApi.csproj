@@ -12,6 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\..\CityworksOfficeWebApp\Lib\XTI_CityworksOfficeAppClient\XTI_CityworksOfficeAppClient.csproj" />
 	  <ProjectReference Include="..\CPW_HandlePaymentTransactionCompleted\CPW_HandlePaymentTransactionCompleted.csproj" />
 	</ItemGroup>
 
