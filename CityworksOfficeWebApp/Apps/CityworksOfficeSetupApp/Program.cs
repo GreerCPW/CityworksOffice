@@ -8,8 +8,9 @@ using XTI_CityworksOfficeWebAppApi;
 using XTI_DB;
 using CPW_ExpandedCityworksDB;
 using CPW_ExpandedCityworksDB.SqlServer;
+using XTI_Core;
 
-await XtiSetupAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
+var host = XtiSetupAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
     .ConfigureServices((hostContext, services) =>
     {
         services.AddSingleton(_ => AppVersionKey.Current);
@@ -18,4 +19,8 @@ await XtiSetupAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
         services.AddExpandedCityworksDbContextForSqlServer();
         services.AddScoped<DbAdmin<ExpandedCityworksDbContext>>();
     })
-    .RunConsoleAsync();
+    .UseConsoleLifetime()
+    .Build();
+var xtiEnv = host.Services.GetRequiredService<XtiEnvironment>();
+EnvironmentSettings.LoadEnvironment(xtiEnv);
+await host.RunAsync();
