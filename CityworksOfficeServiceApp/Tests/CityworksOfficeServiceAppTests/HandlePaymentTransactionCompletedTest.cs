@@ -784,6 +784,173 @@ internal sealed class HandlePaymentTransactionCompletedTest
         Assert.That(receiptText, Is.EqualTo(FakeReceiptWriter.Output(caseDetail.Case, receiptDetail)), "Should upload receipt file");
     }
 
+    [Test]
+    public async Task ShouldResolveElectricPaidTaskAsNotApplicable_WhenElectricFeeIsZeroAndOtherFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.AddElectricFee(caseDetail, amount: 0);
+        var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
+        var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        var electricPaidTask = cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(waterCapacityFee)
+            .AddAppliedPayment(waterCapacityFee.Amount, PaymentMethod.Values.Cash)
+            .AddLine(waterTapFee)
+            .AddAppliedPayment(waterTapFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedElectricPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(electricPaidTask.ID).Task;
+        Assert.That(updatedElectricPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve electric paid task as not applicable when electric fee is zero and other fees are paid");
+    }
+
+    [Test]
+    public async Task ShouldNotResolveElectricPaidTaskAsNotApplicable_WhenElectricFeeIsZeroAndOtherFeesAreNotPaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.AddElectricFee(caseDetail, amount: 0);
+        var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
+        var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        var electricPaidTask = cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(waterCapacityFee)
+            .AddAppliedPayment(waterCapacityFee.Amount, PaymentMethod.Values.Cash)
+            .AddLine(waterTapFee)
+            .AddAppliedPayment(waterTapFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedElectricPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(electricPaidTask.ID).Task;
+        Assert.That(updatedElectricPaidTask.ResultCode, Is.EqualTo(""), "Should not resolve electric paid task as not applicable when electric fee is zero and other fees are not paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveElectricPaidTaskAsNotApplicable_WhenElectricFeeIsZeroAndOtherFeesArePaidLater()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.AddElectricFee(caseDetail, amount: 0);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
+        var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddGasPaidTask(caseDetail);
+        var electricPaidTask = cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(waterCapacityFee)
+            .AddAppliedPayment(waterCapacityFee.Amount, PaymentMethod.Values.Cash)
+            .AddLine(waterTapFee)
+            .AddAppliedPayment(waterTapFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var eventData2 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(gasFee)
+            .AddAppliedPayment(gasFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData2);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedElectricPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(electricPaidTask.ID).Task;
+        Assert.That(updatedElectricPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve electric paid task as not applicable when electric fee is zero and other fees are paid later");
+    }
+
+    [Test]
+    public async Task ShouldResolveWaterPaidTaskAsNotApplicable_WhenWaterFeeIsZeroAndOtherFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail, amount: 0);
+        var waterTapFee = cwService.AddWaterTapFee(caseDetail, amount: 0);
+        var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedWaterPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(waterPaidTask.ID).Task;
+        Assert.That(updatedWaterPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve water paid task as not applicable when water fee is zero and other fees are paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveHydrantPaidTaskAsNotApplicable_WhenHydrantFeeIsZeroAndOtherFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var hydrantFee = cwService.AddFireHydrantFee(caseDetail, amount: 0);
+        var hydrantPaidTask = cwService.AddFireHydrantPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedHydrantPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(hydrantPaidTask.ID).Task;
+        Assert.That(updatedHydrantPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve hydrant paid task as not applicable when hydrant fee is zero and other fees are paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveGasPaidTaskAsNotApplicable_WhenGasFeeIsZeroAndOtherFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail, amount: 0);
+        var gasPaidTask = cwService.AddGasPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedGasPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(gasPaidTask.ID).Task;
+        Assert.That(updatedGasPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve gas paid task as not applicable when gas fee is zero and other fees are paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveSewerPaidTaskAsNotApplicable_WhenSewerFeeIsZeroAndOtherFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var sewerCapacityFee = cwService.AddSewerCapacityFee(caseDetail, amount: 0);
+        var sewerTapFee = cwService.AddSewerTapFee(caseDetail, amount: 0);
+        var sewerPaidTask = cwService.AddSewerPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedSewerPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(sewerPaidTask.ID).Task;
+        Assert.That(updatedSewerPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve sewer paid task as not applicable when sewer fee is zero and other fees are paid");
+    }
+
     private Task<IServiceProvider> Setup(string envName = "Development")
     {
         var host = new CityworksOfficeTestHost();

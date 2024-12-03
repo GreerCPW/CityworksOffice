@@ -273,32 +273,32 @@ public sealed class FakeCityworksService : ICityworksService
         return Task.FromResult(payment);
     }
 
-    public CaseFeeModel AddWaterCapacityFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "WATER CAP", 800);
+    public CaseFeeModel AddWaterCapacityFee(CaseDetailModel caseDetail, decimal amount = 800) =>
+        AddCaseFee(caseDetail, "WATER CAP", amount);
 
-    public CaseFeeModel AddWaterTapFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "WATER TAP", 1125);
+    public CaseFeeModel AddWaterTapFee(CaseDetailModel caseDetail, decimal amount = 1125) =>
+        AddCaseFee(caseDetail, "WATER TAP", amount);
 
-    public CaseFeeModel AddIrrigationCapacityFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "IRR CAP", 800);
+    public CaseFeeModel AddIrrigationCapacityFee(CaseDetailModel caseDetail, decimal amount = 800) =>
+        AddCaseFee(caseDetail, "IRR CAP", amount);
 
-    public CaseFeeModel AddIrrigationTapFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "IRR TAP", 1125);
+    public CaseFeeModel AddIrrigationTapFee(CaseDetailModel caseDetail, decimal amount = 1125) =>
+        AddCaseFee(caseDetail, "IRR TAP", amount);
 
-    public CaseFeeModel AddFireHydrantFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "FIRE HYD", 3750);
+    public CaseFeeModel AddFireHydrantFee(CaseDetailModel caseDetail, decimal amount = 3750) =>
+        AddCaseFee(caseDetail, "FIRE HYD", amount);
 
-    public CaseFeeModel AddElectricFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "EL DEV", 400);
+    public CaseFeeModel AddElectricFee(CaseDetailModel caseDetail, decimal amount = 400) =>
+        AddCaseFee(caseDetail, "EL DEV", amount);
 
-    public CaseFeeModel AddGasServiceFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "GAS FEES", 255);
+    public CaseFeeModel AddGasServiceFee(CaseDetailModel caseDetail, decimal amount = 255) =>
+        AddCaseFee(caseDetail, "GAS FEES", amount);
 
-    public CaseFeeModel AddSewerCapacityFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "SEWER CAP", 1200);
+    public CaseFeeModel AddSewerCapacityFee(CaseDetailModel caseDetail, decimal amount = 1200) =>
+        AddCaseFee(caseDetail, "SEWER CAP", amount);
 
-    public CaseFeeModel AddSewerTapFee(CaseDetailModel caseDetail) =>
-        AddCaseFee(caseDetail, "SEWER TAP", 500);
+    public CaseFeeModel AddSewerTapFee(CaseDetailModel caseDetail, decimal amount = 500) =>
+        AddCaseFee(caseDetail, "SEWER TAP", amount);
 
     public CaseTaskModel AddWaterPaidTask(CaseDetailModel caseDetail) =>
         AddCaseTaskDetail(caseDetail, "WATER_PAID");

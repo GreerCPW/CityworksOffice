@@ -81,7 +81,7 @@ internal sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, Emp
     private Task<ExpandedFeeEntity[]> GetFeesToVoid()
     {
         return db.ExpandedFees.Retrieve()
-            .Where(f => f.CaseStatus == VoidStatus)
+            .Where(f => f.CaseStatus == VoidStatus && f.FeeAmount > f.PaymentAmount)
             .Join
             (
                 db.ExpandedReceivableLineItems.Retrieve(),

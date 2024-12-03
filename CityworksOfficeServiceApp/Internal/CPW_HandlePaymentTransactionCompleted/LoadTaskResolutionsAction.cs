@@ -6,7 +6,27 @@ namespace CPW_HandlePaymentTransactionCompleted;
 
 internal sealed class LoadTaskResolutionsAction : JobAction<HandlePaymentTransactionData>
 {
+    private const string WaterCapacityFeeCode = "WATER CAP";
+    private const string WaterTapFeeCode = "WATER TAP";
+    private const string IrrigationCapacityFeeCode = "IRR CAP";
+    private const string IrrigationTapFeeCode = "IRR TAP";
+    private const string FireHydrantFeeCode = "FIRE HYD";
+    private const string ElectricFeeCode = "EL DEV";
+    private const string GasFeeCode = "GAS FEES";
+    private const string SewerCapacityFeeCode = "SEWER CAP";
+    private const string SewerTapFeeCode = "SEWER TAP";
+
+    private const string WaterPaidTaskCode = "WATER_PAID";
+    private const string FireHydrantPaidTaskCode = "HYD_PAID";
+    private const string ElectricPaidTaskCode = "ELEC_PAID";
+    private const string GasPaidTaskCode = "GAS_PAID";
+    private const string SewerPaidTaskCode = "SEWER_PAID";
+
+    private const string NotApplicableResultCode = "NOT APP";
+    private const string PaidActiveResultCode = "PAIDACTIVE";
+
     private readonly ICityworksService cwService;
+    private readonly List<long> taskIDs = new();
 
     public LoadTaskResolutionsAction(ICityworksService cwService, TriggeredJobTask task) : base(task)
     {
@@ -15,6 +35,7 @@ internal sealed class LoadTaskResolutionsAction : JobAction<HandlePaymentTransac
 
     protected override async Task Execute(CancellationToken stoppingToken, TriggeredJobTask task, JobActionResultBuilder next, HandlePaymentTransactionData data)
     {
+        taskIDs.Clear();
         var caseDetail = await cwService.GetCaseDetail(data.CaseID, stoppingToken);
         var paidFees = data.AppliedPayments
             .Select(ap => ap.CasePaymentID)
@@ -27,35 +48,32 @@ internal sealed class LoadTaskResolutionsAction : JobAction<HandlePaymentTransac
         TryResolveElectricPaidTask(caseDetail, paidFees, next);
         TryResolveGasPaidTask(caseDetail, paidFees, next);
         TryResolveSewerPaidTask(caseDetail, paidFees, next);
+        TryResolvePaidNotApplicableTasks(caseDetail, next);
     }
 
-    private static void TryResolveWaterPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
+    private void TryResolveWaterPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
     {
-        const string waterCapacityFeeCode = "WATER CAP";
-        const string waterTapFeeCode = "WATER TAP";
-        const string irrigationCapacityFeeCode = "IRR CAP";
-        const string irrigationTapFeeCode = "IRR TAP";
-        var waterCapacityFee = paidFees.FirstOrDefault(f => f.HasCode(waterCapacityFeeCode)) ?? new();
-        var waterTapFee = paidFees.FirstOrDefault(f => f.HasCode(waterTapFeeCode)) ?? new();
-        var irrigationCapacityFee = paidFees.FirstOrDefault(f => f.HasCode(irrigationCapacityFeeCode)) ?? new();
-        var irrigationTapFee = paidFees.FirstOrDefault(f => f.HasCode(irrigationTapFeeCode)) ?? new();
+        var waterCapacityFee = paidFees.FirstOrDefault(f => f.HasCode(WaterCapacityFeeCode)) ?? new();
+        var waterTapFee = paidFees.FirstOrDefault(f => f.HasCode(WaterTapFeeCode)) ?? new();
+        var irrigationCapacityFee = paidFees.FirstOrDefault(f => f.HasCode(IrrigationCapacityFeeCode)) ?? new();
+        var irrigationTapFee = paidFees.FirstOrDefault(f => f.HasCode(IrrigationTapFeeCode)) ?? new();
         if (waterCapacityFee.IsFound() || waterTapFee.IsFound() || irrigationCapacityFee.IsFound() || irrigationTapFee.IsFound())
         {
             if (!waterCapacityFee.IsFound())
             {
-                waterCapacityFee = caseDetail.GetFeeDetailOrDefault(waterCapacityFeeCode).Fee;
+                waterCapacityFee = caseDetail.GetFeeDetailOrDefault(WaterCapacityFeeCode).Fee;
             }
             if (!waterTapFee.IsFound())
             {
-                waterTapFee = caseDetail.GetFeeDetailOrDefault(waterTapFeeCode).Fee;
+                waterTapFee = caseDetail.GetFeeDetailOrDefault(WaterTapFeeCode).Fee;
             }
             if (!irrigationCapacityFee.IsFound())
             {
-                irrigationCapacityFee = caseDetail.GetFeeDetailOrDefault(irrigationCapacityFeeCode).Fee;
+                irrigationCapacityFee = caseDetail.GetFeeDetailOrDefault(IrrigationCapacityFeeCode).Fee;
             }
             if (!irrigationTapFee.IsFound())
             {
-                irrigationTapFee = caseDetail.GetFeeDetailOrDefault(irrigationTapFeeCode).Fee;
+                irrigationTapFee = caseDetail.GetFeeDetailOrDefault(IrrigationTapFeeCode).Fee;
             }
             if
             (
@@ -63,7 +81,7 @@ internal sealed class LoadTaskResolutionsAction : JobAction<HandlePaymentTransac
                 irrigationCapacityFee.IsPaidInFull() && irrigationTapFee.IsPaidInFull()
             )
             {
-                var waterPaidTask = caseDetail.GetTaskDetailOrDefault("WATER_PAID").Task;
+                var waterPaidTask = caseDetail.GetTaskDetailOrDefault(WaterPaidTaskCode).Task;
                 if (waterPaidTask.IsFound())
                 {
                     var hasIrrigation = irrigationCapacityFee.IsFound() || irrigationTapFee.IsFound();
@@ -73,108 +91,176 @@ internal sealed class LoadTaskResolutionsAction : JobAction<HandlePaymentTransac
                         hasIrrigationAndWater ? "WT WTR IRR" :
                         hasIrrigation ? "WT IRRIG" :
                         "WT WATER";
-                    next.AddNext
-                    (
-                        HandlePaymentTransactionCompletedInfo.ResolveCaseTask,
-                        new ResolveCaseTaskRequest
-                        (
-                            id: waterPaidTask.ID,
-                            resultCode: resultCode
-                        )
-                    );
+                    AddNextResolveCaseTask(next, waterPaidTask, resultCode);
                 }
             }
         }
     }
 
-    private static void TryResolveHydrantPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
+    private void TryResolveHydrantPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
     {
-        var hydrantFee = paidFees.FirstOrDefault(f => f.HasCode("FIRE HYD")) ?? new();
+        var hydrantFee = paidFees.FirstOrDefault(f => f.HasCode(FireHydrantFeeCode)) ?? new();
         if (hydrantFee.IsFound() && hydrantFee.IsPaidInFull())
         {
-            var hydrantPaidTask = caseDetail.GetTaskDetailOrDefault("HYD_PAID").Task;
+            var hydrantPaidTask = caseDetail.GetTaskDetailOrDefault(FireHydrantPaidTaskCode).Task;
             if (hydrantPaidTask.IsFound())
             {
-                next.AddNext
-                (
-                    HandlePaymentTransactionCompletedInfo.ResolveCaseTask,
-                    new ResolveCaseTaskRequest(id: hydrantPaidTask.ID, resultCode: "PAIDACTIVE")
-                );
+                AddNextResolveCaseTask(next, hydrantPaidTask, PaidActiveResultCode);
             }
         }
     }
 
-    private static void TryResolveElectricPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
+    private void TryResolveElectricPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
     {
-        var electricFee = paidFees.FirstOrDefault(f => f.HasCode("EL DEV")) ?? new();
+        var electricFee = paidFees.FirstOrDefault(f => f.HasCode(ElectricFeeCode)) ?? new();
         if (electricFee.IsFound() && electricFee.IsPaidInFull())
         {
-            var electricPaidTask = caseDetail.GetTaskDetailOrDefault("ELEC_PAID").Task;
+            var electricPaidTask = caseDetail.GetTaskDetailOrDefault(ElectricPaidTaskCode).Task;
             if (electricPaidTask.IsFound())
             {
                 var cityLimits = caseDetail.GetDataDetailOrDefault("CITY LIMIT", "IN OR OUT").Value;
-                next.AddNext
-                (
-                    HandlePaymentTransactionCompletedInfo.ResolveCaseTask,
-                    new ResolveCaseTaskRequest
-                    (
-                        id: electricPaidTask.ID,
-                        resultCode: cityLimits.Equals("Outside", StringComparison.OrdinalIgnoreCase) ? "ELEC CNTY" : "ELEC CITY"
-                    )
-                );
+                var resultCode = cityLimits.Equals("Outside", StringComparison.OrdinalIgnoreCase) ? "ELEC CNTY" : "ELEC CITY";
+                AddNextResolveCaseTask(next, electricPaidTask, resultCode);
             }
         }
     }
 
-    private static void TryResolveGasPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
+    private void TryResolveGasPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
     {
-        var gasServiceFee = paidFees.FirstOrDefault(f => f.HasCode("GAS FEES")) ?? new();
+        var gasServiceFee = paidFees.FirstOrDefault(f => f.HasCode(GasFeeCode)) ?? new();
         if (gasServiceFee.IsFound() && gasServiceFee.IsPaidInFull())
         {
-            var gasPaidTask = caseDetail.GetTaskDetailOrDefault("GAS_PAID").Task;
+            var gasPaidTask = caseDetail.GetTaskDetailOrDefault(GasPaidTaskCode).Task;
             if (gasPaidTask.IsFound())
             {
-                next.AddNext
-                (
-                    HandlePaymentTransactionCompletedInfo.ResolveCaseTask,
-                    new ResolveCaseTaskRequest(id: gasPaidTask.ID, resultCode: "PAIDACTIVE")
-                );
+                AddNextResolveCaseTask(next, gasPaidTask, PaidActiveResultCode);
             }
         }
     }
 
-    private static void TryResolveSewerPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
+    private void TryResolveSewerPaidTask(CaseDetailModel caseDetail, CaseFeeModel[] paidFees, JobActionResultBuilder next)
     {
-        const string sewerCapacityFeeCode = "SEWER CAP";
-        const string sewerTapFeeCode = "SEWER TAP";
-        var sewerCapacityFee = paidFees.FirstOrDefault(f => f.HasCode(sewerCapacityFeeCode)) ?? new();
-        var sewerTapFee = paidFees.FirstOrDefault(f => f.HasCode(sewerTapFeeCode)) ?? new();
+        var sewerCapacityFee = paidFees.FirstOrDefault(f => f.HasCode(SewerCapacityFeeCode)) ?? new();
+        var sewerTapFee = paidFees.FirstOrDefault(f => f.HasCode(SewerTapFeeCode)) ?? new();
         if (sewerCapacityFee.IsFound() || sewerTapFee.IsFound())
         {
             if (!sewerCapacityFee.IsFound())
             {
-                sewerCapacityFee = caseDetail.GetFeeDetailOrDefault(sewerCapacityFeeCode).Fee;
+                sewerCapacityFee = caseDetail.GetFeeDetailOrDefault(SewerCapacityFeeCode).Fee;
             }
             if (!sewerTapFee.IsFound())
             {
-                sewerTapFee = caseDetail.GetFeeDetailOrDefault(sewerTapFeeCode).Fee;
+                sewerTapFee = caseDetail.GetFeeDetailOrDefault(SewerTapFeeCode).Fee;
             }
             if (sewerCapacityFee.IsPaidInFull() && sewerTapFee.IsPaidInFull())
             {
-                var sewerPaidTask = caseDetail.GetTaskDetailOrDefault("SEWER_PAID").Task;
+                var sewerPaidTask = caseDetail.GetTaskDetailOrDefault(SewerPaidTaskCode).Task;
                 if (sewerPaidTask.IsFound())
                 {
-                    next.AddNext
-                    (
-                        HandlePaymentTransactionCompletedInfo.ResolveCaseTask,
-                        new ResolveCaseTaskRequest
-                        (
-                            id: sewerPaidTask.ID,
-                            resultCode: "PAIDACTIVE"
-                        )
-                    );
+                    AddNextResolveCaseTask(next, sewerPaidTask, PaidActiveResultCode);
                 }
             }
+        }
+    }
+
+    private void TryResolvePaidNotApplicableTasks(CaseDetailModel caseDetail, JobActionResultBuilder next)
+    {
+        if (caseDetail.FeeDetails.All(fd => fd.Fee.Amount <= fd.Fee.PaymentAmount))
+        {
+            TryResolveWaterPaidNotApplicableTask(caseDetail, next);
+            TryResolveHydrantPaidNotApplicableTask(caseDetail, next);
+            TryResolveElectricPaidNotApplicableTask(caseDetail, next);
+            TryResolveGasPaidNotApplicableTask(caseDetail, next);
+            TryResolveSewerPaidNotApplicableTask(caseDetail, next);
+        }
+    }
+
+    private void TryResolveWaterPaidNotApplicableTask(CaseDetailModel caseDetail, JobActionResultBuilder next)
+    {
+        var waterCapacityFee = caseDetail.GetFeeDetailOrDefault(WaterCapacityFeeCode).Fee;
+        var waterTapFee = caseDetail.GetFeeDetailOrDefault(WaterTapFeeCode).Fee;
+        var irrigationCapacityFee = caseDetail.GetFeeDetailOrDefault(IrrigationCapacityFeeCode).Fee;
+        var irrigationTapFee = caseDetail.GetFeeDetailOrDefault(IrrigationTapFeeCode).Fee;
+        if (waterCapacityFee.Amount == 0 && waterTapFee.Amount == 0 && irrigationCapacityFee.Amount == 0 && irrigationTapFee.Amount == 0)
+        {
+            var waterPaidTask = caseDetail.GetTaskDetailOrDefault(WaterPaidTaskCode).Task;
+            if (waterPaidTask.IsFound())
+            {
+                AddNextResolveCaseTask(next, waterPaidTask, NotApplicableResultCode);
+            }
+        }
+    }
+
+    private void TryResolveHydrantPaidNotApplicableTask(CaseDetailModel caseDetail, JobActionResultBuilder next)
+    {
+        var hydrantFee = caseDetail.GetFeeDetailOrDefault(FireHydrantFeeCode).Fee;
+        if (hydrantFee.Amount == 0)
+        {
+            var hydrantPaidTask = caseDetail.GetTaskDetailOrDefault(FireHydrantPaidTaskCode).Task;
+            if (hydrantPaidTask.IsFound())
+            {
+                AddNextResolveCaseTask(next, hydrantPaidTask, NotApplicableResultCode);
+            }
+        }
+    }
+
+    private void TryResolveElectricPaidNotApplicableTask(CaseDetailModel caseDetail, JobActionResultBuilder next)
+    {
+        var electricFee = caseDetail.GetFeeDetailOrDefault(ElectricFeeCode).Fee;
+        if (electricFee.Amount == 0)
+        {
+            var electricPaidTask = caseDetail.GetTaskDetailOrDefault(ElectricPaidTaskCode).Task;
+            if (electricPaidTask.IsFound())
+            {
+                AddNextResolveCaseTask(next, electricPaidTask, NotApplicableResultCode);
+            }
+        }
+    }
+
+    private void TryResolveGasPaidNotApplicableTask(CaseDetailModel caseDetail, JobActionResultBuilder next)
+    {
+        var gasFee = caseDetail.GetFeeDetailOrDefault(GasFeeCode).Fee;
+        if (gasFee.Amount == 0)
+        {
+            var gasPaidTask = caseDetail.GetTaskDetailOrDefault(GasPaidTaskCode).Task;
+            if (gasPaidTask.IsFound())
+            {
+                AddNextResolveCaseTask(next, gasPaidTask, NotApplicableResultCode);
+            }
+        }
+    }
+
+    private void TryResolveSewerPaidNotApplicableTask(CaseDetailModel caseDetail, JobActionResultBuilder next)
+    {
+        var sewerCapacityFee = caseDetail.GetFeeDetailOrDefault(SewerCapacityFeeCode).Fee;
+        var sewerTapFee = caseDetail.GetFeeDetailOrDefault(SewerTapFeeCode).Fee;
+        if (sewerCapacityFee.Amount == 0 && sewerTapFee.Amount == 0)
+        {
+            var sewerPaidTask = caseDetail.GetTaskDetailOrDefault(SewerPaidTaskCode).Task;
+            if (sewerPaidTask.IsFound())
+            {
+                AddNextResolveCaseTask(next, sewerPaidTask, NotApplicableResultCode);
+            }
+        }
+    }
+
+    private void AddNextResolveCaseTask(JobActionResultBuilder next, CaseTaskModel paidTask, string resultCode)
+    {
+        if (!paidTask.ResultCode.Equals(resultCode, StringComparison.OrdinalIgnoreCase))
+        {
+            if (taskIDs.Contains(paidTask.ID))
+            {
+                throw new Exception($"Task {paidTask.ID} has already been resolved. Unable to set result to '{resultCode}'.");
+            }
+            next.AddNext
+            (
+                HandlePaymentTransactionCompletedInfo.ResolveCaseTask,
+                new ResolveCaseTaskRequest
+                (
+                    id: paidTask.ID,
+                    resultCode: resultCode
+                )
+            );
         }
     }
 }
