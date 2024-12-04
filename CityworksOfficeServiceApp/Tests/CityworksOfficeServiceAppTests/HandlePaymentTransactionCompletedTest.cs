@@ -468,6 +468,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var caseDetail = AddCaseDetail(cwService);
         var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddIrrigationCapacityFee(caseDetail, amount: 0);
+        cwService.AddIrrigationTapFee(caseDetail, amount: 0);
         var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
             .AddLine(waterCapacityFee)
             .AddAppliedPayment(waterCapacityFee.Amount, PaymentMethod.Values.Cash)
@@ -487,6 +489,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var caseDetail = AddCaseDetail(cwService);
         var waterTapFee = cwService.AddWaterTapFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddIrrigationCapacityFee(caseDetail, amount: 0);
+        cwService.AddIrrigationTapFee(caseDetail, amount: 0);
         var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
             .AddLine(waterTapFee)
             .AddAppliedPayment(waterTapFee.Amount, PaymentMethod.Values.Cash)
@@ -506,6 +510,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var caseDetail = AddCaseDetail(cwService);
         var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
         var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        cwService.AddIrrigationCapacityFee(caseDetail, amount: 0);
+        cwService.AddIrrigationTapFee(caseDetail, amount: 0);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
         var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
             .AddLine(waterCapacityFee)
@@ -527,6 +533,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
         var waterTapFee = cwService.AddWaterTapFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddIrrigationCapacityFee(caseDetail, amount: 0);
+        cwService.AddIrrigationTapFee(caseDetail, amount: 0);
         var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
             .AddLine(waterTapFee)
             .AddAppliedPayment(waterTapFee.Amount, PaymentMethod.Values.Cash)
@@ -546,6 +554,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var caseDetail = AddCaseDetail(cwService);
         var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
         var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        cwService.AddIrrigationCapacityFee(caseDetail, amount: 0);
+        cwService.AddIrrigationTapFee(caseDetail, amount: 0);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
         var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
             .AddLine(waterTapFee)
@@ -570,6 +580,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
         var caseDetail = AddCaseDetail(cwService);
+        cwService.AddWaterCapacityFee(caseDetail, amount: 0);
+        cwService.AddWaterTapFee(caseDetail, amount: 0);
         var irrigationCapacityFee = cwService.AddIrrigationCapacityFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
         var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
@@ -589,6 +601,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
         var caseDetail = AddCaseDetail(cwService);
+        cwService.AddWaterCapacityFee(caseDetail, amount: 0);
+        cwService.AddWaterTapFee(caseDetail, amount: 0);
         var irrigationTapFee = cwService.AddIrrigationTapFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
         var eventData = new PaymentTransactionEventDataBuilder(caseDetail)
@@ -608,6 +622,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
         var caseDetail = AddCaseDetail(cwService);
+        cwService.AddWaterCapacityFee(caseDetail, amount: 0);
+        cwService.AddWaterTapFee(caseDetail, amount: 0);
         var irrigationCapacityFee = cwService.AddIrrigationCapacityFee(caseDetail);
         var irrigationTapFee = cwService.AddIrrigationTapFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
@@ -628,6 +644,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
         var caseDetail = AddCaseDetail(cwService);
+        cwService.AddWaterCapacityFee(caseDetail, amount: 0);
+        cwService.AddWaterTapFee(caseDetail, amount: 0);
         var irrigationCapacityFee = cwService.AddIrrigationCapacityFee(caseDetail);
         var irrigationTapFee = cwService.AddIrrigationTapFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
@@ -648,6 +666,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
         var caseDetail = AddCaseDetail(cwService);
+        cwService.AddWaterCapacityFee(caseDetail, amount: 0);
+        cwService.AddWaterTapFee(caseDetail, amount: 0);
         var irrigationCapacityFee = cwService.AddIrrigationCapacityFee(caseDetail);
         var irrigationTapFee = cwService.AddIrrigationTapFee(caseDetail);
         var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
@@ -785,6 +805,52 @@ internal sealed class HandlePaymentTransactionCompletedTest
     }
 
     [Test]
+    public async Task ShouldResolveElectricPaidTaskAsPaidInsideCity_WhenElectricWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.LocationIsInsideTheCity(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, electricFee);
+        var electricPaidTask = cwService.AddElectricPaidTask(caseDetail);
+        cwService.AddGasPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(gasFee)
+            .AddAppliedPayment(gasFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedElectricPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(electricPaidTask.ID).Task;
+        Assert.That(updatedElectricPaidTask.ResultCode, Is.EqualTo("ELEC CITY"), "Should resolve electric paid task as paid when electric was already paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveElectricPaidTaskAsPaidOutsideCity_WhenElectricWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.LocationIsOutsideTheCity(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, electricFee);
+        var electricPaidTask = cwService.AddElectricPaidTask(caseDetail);
+        cwService.AddGasPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(gasFee)
+            .AddAppliedPayment(gasFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedElectricPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(electricPaidTask.ID).Task;
+        Assert.That(updatedElectricPaidTask.ResultCode, Is.EqualTo("ELEC CNTY"), "Should resolve electric paid task as paid when electric was already paid");
+    }
+
+    [Test]
     public async Task ShouldResolveElectricPaidTaskAsNotApplicable_WhenElectricFeeIsZeroAndOtherFeesArePaid()
     {
         var sp = await Setup();
@@ -866,6 +932,85 @@ internal sealed class HandlePaymentTransactionCompletedTest
     }
 
     [Test]
+    public async Task ShouldResolveWaterPaidTaskAsWaterPaid_WhenWaterWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.LocationIsInsideTheCity(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, waterCapacityFee);
+        var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, waterTapFee);
+        var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddGasPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(gasFee)
+            .AddAppliedPayment(gasFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedWaterPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(waterPaidTask.ID).Task;
+        Assert.That(updatedWaterPaidTask.ResultCode, Is.EqualTo("WT WATER"), "Should resolve water paid task as paid when water was already paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveWaterPaidTaskAsIrrigationPaid_WhenWaterWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.LocationIsInsideTheCity(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var irrigationCapacityFee = cwService.AddIrrigationCapacityFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, irrigationCapacityFee);
+        var irrigationTapFee = cwService.AddIrrigationTapFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, irrigationTapFee);
+        var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddGasPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(gasFee)
+            .AddAppliedPayment(gasFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedWaterPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(waterPaidTask.ID).Task;
+        Assert.That(updatedWaterPaidTask.ResultCode, Is.EqualTo("WT IRRIG"), "Should resolve water paid task as paid when water was already paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveWaterPaidTaskAsWaterAndIrrigationPaid_WhenWaterWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        cwService.LocationIsInsideTheCity(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        var waterCapacityFee = cwService.AddWaterCapacityFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, waterCapacityFee);
+        var waterTapFee = cwService.AddWaterTapFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, waterTapFee);
+        var irrigationCapacityFee = cwService.AddIrrigationCapacityFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, irrigationCapacityFee);
+        var irrigationTapFee = cwService.AddIrrigationTapFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, irrigationTapFee);
+        var waterPaidTask = cwService.AddWaterPaidTask(caseDetail);
+        cwService.AddGasPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(gasFee)
+            .AddAppliedPayment(gasFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedWaterPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(waterPaidTask.ID).Task;
+        Assert.That(updatedWaterPaidTask.ResultCode, Is.EqualTo("WT WTR IRR"), "Should resolve water paid task as paid when water was already paid");
+    }
+
+    [Test]
     public async Task ShouldResolveWaterPaidTaskAsNotApplicable_WhenWaterFeeIsZeroAndOtherFeesArePaid()
     {
         var sp = await Setup();
@@ -885,6 +1030,28 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedWaterPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(waterPaidTask.ID).Task;
         Assert.That(updatedWaterPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve water paid task as not applicable when water fee is zero and other fees are paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveHydrantPaidTaskAsPaid_WhenHydrantWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var hydrantFee = cwService.AddFireHydrantFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, hydrantFee);
+        var hydrantPaidTask = cwService.AddFireHydrantPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedHydrantPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(hydrantPaidTask.ID).Task;
+        Assert.That(updatedHydrantPaidTask.ResultCode, Is.EqualTo("PAIDACTIVE"), "Should resolve hydrant paid task as paid when hydrant was already paid");
     }
 
     [Test]
@@ -909,7 +1076,7 @@ internal sealed class HandlePaymentTransactionCompletedTest
     }
 
     [Test]
-    public async Task ShouldResolveGasPaidTaskAsNotApplicable_WhenGasFeeIsZeroAndOtherFeesArePaid()
+    public async Task ShouldResolveGasPaidTaskAsNotApplicable_WhenGasFeeIsZeroAndAllFeesArePaid()
     {
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
@@ -930,7 +1097,29 @@ internal sealed class HandlePaymentTransactionCompletedTest
     }
 
     [Test]
-    public async Task ShouldResolveSewerPaidTaskAsNotApplicable_WhenSewerFeeIsZeroAndOtherFeesArePaid()
+    public async Task ShouldResolveGasPaidTaskAsPaid_WhenGasWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var gasFee = cwService.AddGasServiceFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, gasFee);
+        var gasPaidTask = cwService.AddGasPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedGasPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(gasPaidTask.ID).Task;
+        Assert.That(updatedGasPaidTask.ResultCode, Is.EqualTo("PAIDACTIVE"), "Should resolve gas paid task as paid when gas was already paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveSewerPaidTaskAsNotApplicable_WhenSewerFeeIsZeroAndAllFeesArePaid()
     {
         var sp = await Setup();
         var cwService = sp.GetRequiredService<FakeCityworksService>();
@@ -949,6 +1138,30 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedSewerPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(sewerPaidTask.ID).Task;
         Assert.That(updatedSewerPaidTask.ResultCode, Is.EqualTo("NOT APP"), "Should resolve sewer paid task as not applicable when sewer fee is zero and other fees are paid");
+    }
+
+    [Test]
+    public async Task ShouldResolveSewerPaidTaskAsPaid_WhenSewerWasAlreadyPaidAndAllFeesArePaid()
+    {
+        var sp = await Setup();
+        var cwService = sp.GetRequiredService<FakeCityworksService>();
+        var caseDetail = AddCaseDetail(cwService);
+        var electricFee = cwService.AddElectricFee(caseDetail);
+        var sewerCapacityFee = cwService.AddSewerCapacityFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, sewerCapacityFee);
+        var sewerTapFee = cwService.AddSewerTapFee(caseDetail);
+        await AddCasePayment(cwService, caseDetail, sewerTapFee);
+        var sewerPaidTask = cwService.AddSewerPaidTask(caseDetail);
+        cwService.AddElectricPaidTask(caseDetail);
+        var eventData1 = new PaymentTransactionEventDataBuilder(caseDetail)
+            .AddLine(electricFee)
+            .AddAppliedPayment(electricFee.Amount, PaymentMethod.Values.Cash)
+            .Build();
+        await NotifyPaymentTransactionCompleted(sp, eventData1);
+        await HandlePaymentTransactionCompleted(sp);
+        var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
+        var updatedSewerPaidTask = updatedCaseDetail.GetTaskDetailOrDefault(sewerPaidTask.ID).Task;
+        Assert.That(updatedSewerPaidTask.ResultCode, Is.EqualTo("PAIDACTIVE"), "Should resolve sewer paid task as paid when sewer was already paid");
     }
 
     private Task<IServiceProvider> Setup(string envName = "Development")
@@ -988,4 +1201,19 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var tester = CityworksOfficeActionTester.Create(sp, api => api.Jobs.HandlePaymentTransactionCompleted);
         return tester.Execute(new());
     }
+
+    private static Task AddCasePayment(FakeCityworksService cwService, CaseDetailModel caseDetail, CaseFeeModel fee) =>
+        cwService.AddCasePayment
+        (
+            new AddCasePaymentRequest
+            {
+                CaseID = caseDetail.Case.ID,
+                CaseFeeID = fee.ID,
+                AmountPaid = fee.Amount,
+                TenderTypeID = 1,
+                TimePaid = DateTimeOffset.Now
+            },
+            default
+        );
+
 }
