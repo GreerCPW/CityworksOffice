@@ -47,7 +47,11 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
                 caseID: data.CaseID,
                 casePaymentIDs: data.AppliedPayments.Select(ap => ap.CasePaymentID).ToArray()
             );
-            next.AddNext(HandlePaymentTransactionCompletedInfo.AddCaseReceipt, addReceiptRequest);
+            next.AddNext
+            (
+                HandlePaymentTransactionCompletedInfo.AddCaseReceipt, 
+                new AddCaseReceiptData(transactionID: data.PaymentTransactionID, caseReceipt: addReceiptRequest)
+            );
         }
     }
 }

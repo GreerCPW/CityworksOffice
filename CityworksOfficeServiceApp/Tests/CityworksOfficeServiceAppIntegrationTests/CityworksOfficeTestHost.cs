@@ -1,8 +1,6 @@
 ﻿using CityworksOfficeServiceApp.Implementations;
 using CityworksOfficeServiceApp.Services;
 using CPW_HandlePaymentTransactionCompleted;
-using DinkToPdf;
-using DinkToPdf.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using XTI_App.Abstractions;
@@ -16,6 +14,7 @@ using XTI_Core.Fakes;
 using XTI_HubAppClient.Extensions;
 using XTI_Jobs;
 using XTI_Jobs.Abstractions;
+using XTI_PaymentTransactionAppClient;
 using XTI_ScheduledJobsAppClient;
 using XTI_Secrets.Extensions;
 using XTI_TempLog;
@@ -71,11 +70,11 @@ internal sealed class CityworksOfficeTestHost
         builder.Services.AddScoped<EventMonitorBuilder>();
         builder.Services.AddScoped<JobRegistrationBuilder>();
         builder.Services.AddScoped<CityworksOfficeJobSetup>();
-        builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         builder.Services.AddScoped<HandlePaymentTransactionCompletedActionFactory>();
-        builder.Services.AddScoped<IReceiptWriterFactory, PdfReceiptWriterFactory>();
         builder.Services.AddCityworksAppClient();
         builder.Services.AddScoped<ICityworksService, DefaultCityworksService>();
+        builder.Services.AddPaymentTransactionAppClient();
+        builder.Services.AddScoped<IPaymentTransactionService, DefaultPaymentTransactionService>();
         if (configure != null)
         {
             configure(builder.Services);

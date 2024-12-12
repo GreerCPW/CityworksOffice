@@ -53,7 +53,8 @@ internal sealed class CityworksOfficeTestHost
         builder.Services.AddScoped<CityworksOfficeJobSetup>();
         builder.Services.AddScoped<FakeCityworksService>();
         builder.Services.AddScoped<ICityworksService>(sp => sp.GetRequiredService<FakeCityworksService>());
-        builder.Services.AddScoped<IReceiptWriterFactory, FakeReceiptWriterFactory>();
+        builder.Services.AddScoped<FakePaymentTransactionService>();
+        builder.Services.AddScoped<IPaymentTransactionService>(sp => sp.GetRequiredService<FakePaymentTransactionService>());
         if (configure != null)
         {
             configure(builder.Services);
