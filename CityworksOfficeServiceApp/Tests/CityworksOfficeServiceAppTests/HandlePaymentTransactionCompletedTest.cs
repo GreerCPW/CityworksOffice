@@ -801,7 +801,7 @@ internal sealed class HandlePaymentTransactionCompletedTest
         var receiptDetail = cwService.GetReceiptDetail(caseDetail);
         var receiptBytes = cwService.GetReceiptFile(receiptDetail);
         var receiptText = UTF8Encoding.UTF8.GetString(receiptBytes);
-        Assert.That(receiptText, Is.EqualTo(FakeReceiptWriter.Output(caseDetail.Case, receiptDetail)), "Should upload receipt file");
+        Assert.That(receiptText, Is.EqualTo(FakePaymentTransactionService.Output(eventData.ID)), "Should upload receipt file");
     }
 
     [Test]

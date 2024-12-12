@@ -1,8 +1,6 @@
 ﻿using CityworksOfficeServiceApp.Implementations;
 using CityworksOfficeServiceApp.Services;
 using CPW_HandlePaymentTransactionCompleted;
-using DinkToPdf;
-using DinkToPdf.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using XTI_App.Api;
@@ -13,6 +11,7 @@ using XTI_Core;
 using XTI_HubAppClient.ServiceApp.Extensions;
 using XTI_Jobs;
 using XTI_Jobs.Abstractions;
+using XTI_PaymentTransactionAppClient;
 using XTI_Schedule;
 using XTI_ScheduledJobsAppClient;
 
@@ -25,12 +24,12 @@ await XtiServiceAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
         services.AddScheduledJobsAppClient();
         services.AddScoped<IJobDb, SjcJobDb>();
         services.AddScoped<EventMonitorBuilder>();
-        services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
         services.AddScoped<HandlePaymentTransactionCompletedActionFactory>();
-        services.AddScoped<IReceiptWriterFactory, PdfReceiptWriterFactory>();
         services.AddCityworksAppClient();
         services.AddScoped<ICityworksService, DefaultCityworksService>();
         services.AddCityworksOfficeAppClient();
+        services.AddPaymentTransactionAppClient();
+        services.AddScoped<IPaymentTransactionService, DefaultPaymentTransactionService>();
         services.AddAppAgenda
         (
             (sp, agenda) =>

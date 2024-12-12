@@ -5,16 +5,18 @@ namespace CPW_HandlePaymentTransactionCompleted;
 public sealed class UploadReceiptFileData
 {
     public UploadReceiptFileData()
-        : this(0, new())
+        : this(0, 0, "")
     {
     }
 
-    public UploadReceiptFileData(long caseID, CaseReceiptDetailModel receiptDetail)
+    public UploadReceiptFileData(int transactionID, long receiptID, string receiptFileName)
     {
-        CaseID = caseID;
-        ReceiptDetail = receiptDetail;
+        TransactionID = transactionID;
+        ReceiptID = receiptID;
+        ReceiptFileName = receiptFileName;
     }
 
-    public long CaseID { get; set; }
-    public CaseReceiptDetailModel ReceiptDetail { get; set; }
+    public int TransactionID { get; set; }
+    public long ReceiptID { get; set; }
+    public string ReceiptFileName { get; set; }
 }

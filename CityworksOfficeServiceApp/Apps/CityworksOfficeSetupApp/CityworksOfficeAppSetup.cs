@@ -35,6 +35,11 @@ internal sealed class CityworksOfficeAppSetup : IAppSetup
                 ),
                 new SetUserAccessRoleRequest
                 (
+                    AppKey.WebApp("PaymentTransaction"),
+                    AppRoleName.Admin
+                ),
+                new SetUserAccessRoleRequest
+                (
                     AppKey.WebApp("Scheduled Jobs"),
                     AppRoleName.Admin
                 )
