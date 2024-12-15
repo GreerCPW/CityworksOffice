@@ -13,7 +13,7 @@
     <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
     <PackageReference Include="Microsoft.Win32.Primitives" Version="4.3.0" />
     <PackageReference Include="XTI_CityworksAppClient" Version="1.0.100" />
-    <PackageReference Include="XTI_PaymentTransactionAppClient" Version="2.0.2-dev241211181532069" />
+    <PackageReference Include="XTI_PaymentTransactionAppClient" Version="2.0.2-dev241215081117770" />
   </ItemGroup>
 
   <ItemGroup>

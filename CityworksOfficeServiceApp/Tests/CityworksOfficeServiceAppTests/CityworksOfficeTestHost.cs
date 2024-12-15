@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CityworksOfficeServiceApp.Services;
+using CPW_HandlePaymentTransactionCompleted;
+using CPW_PaymentTransaction.Events;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using XTI_App.Abstractions;
 using XTI_App.Api;
@@ -7,15 +10,11 @@ using XTI_App.Fakes;
 using XTI_Core;
 using XTI_Core.Extensions;
 using XTI_Core.Fakes;
-using XTI_CityworksOfficeServiceAppApi;
-using XTI_WebApp.Fakes;
-using XTI_Jobs.Abstractions;
 using XTI_Jobs;
+using XTI_Jobs.Abstractions;
 using XTI_JobsDB.EF;
 using XTI_JobsDB.InMemory;
-using CityworksOfficeServiceApp.Services;
-using CPW_HandlePaymentTransactionCompleted;
-using CPW_PaymentTransaction.Events;
+using XTI_WebApp.Fakes;
 
 namespace CityworksOfficeServiceAppTests;
 
