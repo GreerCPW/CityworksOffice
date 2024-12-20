@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="8.0.0" />
-    <PackageReference Include="CPW_PaymentTransaction.Abstractions" Version="2.0.2" />
-    <PackageReference Include="CPW_PaymentTransaction.Events" Version="2.0.2" />
+    <PackageReference Include="CPW_PaymentTransaction.Abstractions" Version="2.0.3" />
+    <PackageReference Include="CPW_PaymentTransaction.Events" Version="2.0.3" />
     <PackageReference Include="XTI_Jobs" Version="1.0.24" />
   </ItemGroup>
 
