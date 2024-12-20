@@ -20,7 +20,7 @@ internal sealed class LoadTaskResolutionsAction : JobAction<HandlePaymentTransac
         var caseDetail = await cwService.GetCaseDetail(data.CaseID, stoppingToken);
         var paidFees = data.AppliedPayments
             .Select(ap => ap.CasePaymentID)
-            .Select(pid => caseDetail.FeeDetails.FirstOrDefault(fd => fd.Payments.Any(p => p.ID == pid)) ?? new())
+            .Select(pid => caseDetail.FeeDetails.FirstOrDefault(fd => fd.PaymentDetails.Any(p => p.Payment.ID == pid)) ?? new())
             .Where(fd => fd.IsFound())
             .Select(fd => fd.Fee)
             .ToArray();

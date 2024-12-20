@@ -27,7 +27,8 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
                 CaseFeeID = handleAppliedPayment.CaseFeeID,
                 AmountPaid = handleAppliedPayment.AmountPaid,
                 TenderTypeID = handleAppliedPayment.TenderTypeID,
-                ReferenceInfo = handleAppliedPayment.ReferenceInfo,
+                AppliedPaymentID = handleAppliedPayment.AppliedPaymentID,
+                ReferenceInfo = "",
                 TimePaid = clock.Now()
             },
             stoppingToken
@@ -45,7 +46,8 @@ internal sealed class AddCasePaymentAction : JobAction<HandlePaymentTransactionD
             (
                 paymentTransactionID: data.PaymentTransactionID,
                 caseID: data.CaseID,
-                casePaymentIDs: data.AppliedPayments.Select(ap => ap.CasePaymentID).ToArray()
+                casePaymentIDs: data.AppliedPayments.Select(ap => ap.CasePaymentID).ToArray(),
+                fileName: $"PYMT_Receipt_{data.CaseID:0000000}_{data.PaymentTransactionID:0000000}"
             );
             next.AddNext
             (

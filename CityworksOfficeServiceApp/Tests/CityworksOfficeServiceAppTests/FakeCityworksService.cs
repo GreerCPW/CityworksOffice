@@ -65,7 +65,7 @@ public sealed class FakeCityworksService : ICityworksService
             EnteredBy: new CwUserModel(),
             DataGroupDetails: [],
             FeeDetails: [],
-            NonFeePayments: [],
+            NonFeePaymentDetails: [],
             People:
             [
                 new CasePersonModel
@@ -215,12 +215,13 @@ public sealed class FakeCityworksService : ICityworksService
             (
                 ID: caseFeeID,
                 Code: code,
+                IsWaived: false,
                 Description: code,
                 Amount: amount,
                 PaymentAmount: 0
             ),
             AccountingCode: "",
-            Payments: []
+            PaymentDetails: []
         );
         caseFeeID++;
         feeDetails.Add(feeDetail);
@@ -240,26 +241,32 @@ public sealed class FakeCityworksService : ICityworksService
         var caseDetail = GetCaseDetail(addRequest.CaseID);
         var feeDetails = caseDetail.FeeDetails.ToList();
         var feeDetail = caseDetail.FeeDetails.First(f => f.Fee.ID == addRequest.CaseFeeID);
-        var payments = feeDetail.Payments.ToList();
-        var payment = new CasePaymentModel
+        var paymentDetails = feeDetail.PaymentDetails.ToList();
+        var paymentDetail = new CasePaymentDetailModel
         (
-            ID: casePaymentID,
-            PaymentDate: addRequest.TimePaid,
-            PaymentAmount: addRequest.AmountPaid,
-            TenderType: tenderTypes.FirstOrDefault(tt => tt.ID == addRequest.TenderTypeID)?.Description ?? "",
-            ReferenceInfo: addRequest.ReferenceInfo,
-            Comment: addRequest.CommentText
+            Payment: new CasePaymentModel
+            (
+                ID: casePaymentID,
+                PaymentDate: addRequest.TimePaid,
+                PaymentAmount: addRequest.AmountPaid,
+                TenderType: tenderTypes.FirstOrDefault(tt => tt.ID == addRequest.TenderTypeID)?.Description ?? "",
+                AppliedPaymentID: addRequest.AppliedPaymentID,
+                ReferenceInfo: addRequest.ReferenceInfo,
+                Comment: addRequest.CommentText,
+                IsVoided: false
+            ),
+            Refunds: []
         );
         casePaymentID++;
-        payments.Add(payment);
+        paymentDetails.Add(paymentDetail);
         feeDetails.Remove(feeDetail);
         feeDetail = feeDetail with
         {
             Fee = feeDetail.Fee with
             {
-                PaymentAmount = payments.Sum(p => p.PaymentAmount)
+                PaymentAmount = paymentDetails.Sum(p => p.Payment.PaymentAmount)
             },
-            Payments = payments.ToArray()
+            PaymentDetails = paymentDetails.ToArray()
         };
         feeDetails.Add(feeDetail);
         UpdateCaseDetail
@@ -270,7 +277,7 @@ public sealed class FakeCityworksService : ICityworksService
                 FeeDetails = feeDetails.ToArray()
             }
         );
-        return Task.FromResult(payment);
+        return Task.FromResult(paymentDetail.Payment);
     }
 
     public CaseFeeModel AddWaterCapacityFee(CaseDetailModel caseDetail, decimal amount = 800) =>
@@ -464,7 +471,7 @@ public sealed class FakeCityworksService : ICityworksService
                 ID: receiptID,
                 ReceiptDate: DateTime.Now,
                 TotalAmountDue: 0,
-                TotalAmountTendered: payments.Any() ? payments.Sum(p => p.PaymentAmount) : 0,
+                TotalAmountTendered: payments.Any() ? payments.Sum(p => p.Payment.PaymentAmount) : 0,
                 FileName: $"PYMT_{addRequest.PaymentTransactionID}"
             ),
             TenderTypes: [],

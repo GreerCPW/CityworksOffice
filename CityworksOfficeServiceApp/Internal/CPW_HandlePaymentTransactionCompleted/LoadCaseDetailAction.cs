@@ -52,7 +52,7 @@ internal sealed class LoadCaseDetailAction : JobAction<PaymentTransactionEventDa
                         caseFeeID: caseFeeID,
                         amountPaid: appliedPayment.AmountPaid,
                         tenderTypeID: tenderType.ID,
-                        referenceInfo: new PaymentReferenceInfo(appliedPayment.ID).Value
+                        appliedPaymentID: appliedPayment.ID
                     );
                     handleAppliedPayments.Add(handleAppliedPayment);
                 }

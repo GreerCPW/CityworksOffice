@@ -81,7 +81,7 @@ internal sealed class HandlePaymentTransactionCompletedTest
         await HandlePaymentTransactionCompleted(sp);
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedFeeDetail = updatedCaseDetail.GetFeeDetailOrDefault(fee1.ID);
-        Assert.That(updatedFeeDetail.Payments.Length, Is.EqualTo(1), "Should add payment for fee");
+        Assert.That(updatedFeeDetail.PaymentDetails.Length, Is.EqualTo(1), "Should add payment for fee");
     }
 
     [Test]
@@ -100,10 +100,10 @@ internal sealed class HandlePaymentTransactionCompletedTest
         await HandlePaymentTransactionCompleted(sp);
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedFeeDetail = updatedCaseDetail.GetFeeDetailOrDefault(fee1.ID);
-        Assert.That(updatedFeeDetail.Payments.Length, Is.EqualTo(2), "Should add multiple payments for fee");
+        Assert.That(updatedFeeDetail.PaymentDetails.Length, Is.EqualTo(2), "Should add multiple payments for fee");
         Assert.That
         (
-            updatedFeeDetail.Payments.Select(p => p.PaymentAmount),
+            updatedFeeDetail.PaymentDetails.Select(p => p.Payment.PaymentAmount),
             Is.EquivalentTo(new[] { 7, 3 }),
             "Should add multiple payments for fee"
         );
@@ -124,8 +124,8 @@ internal sealed class HandlePaymentTransactionCompletedTest
         await HandlePaymentTransactionCompleted(sp);
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedFeeDetail = updatedCaseDetail.GetFeeDetailOrDefault(fee1.ID);
-        var payment = updatedFeeDetail.Payments.FirstOrDefault() ?? new();
-        Assert.That(payment.TenderType, Is.EqualTo("Cash"), "Should set payment tender type when adding payment");
+        var paymentDetail = updatedFeeDetail.PaymentDetails.FirstOrDefault() ?? new();
+        Assert.That(paymentDetail.Payment.TenderType, Is.EqualTo("Cash"), "Should set payment tender type when adding payment");
     }
 
     [Test]
@@ -143,9 +143,9 @@ internal sealed class HandlePaymentTransactionCompletedTest
         await HandlePaymentTransactionCompleted(sp);
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedFeeDetail = updatedCaseDetail.GetFeeDetailOrDefault(fee1.ID);
-        var payment = updatedFeeDetail.Payments.FirstOrDefault() ?? new();
+        var paymentDetail = updatedFeeDetail.PaymentDetails.FirstOrDefault() ?? new();
         var appliedPaymentID = eventData.LineItems.First().AppliedPayments.First().ID;
-        Assert.That(payment.ReferenceInfo, Is.EqualTo($"PYMT:{appliedPaymentID:0000000}"), "Should set payment reference info when adding payment");
+        Assert.That(paymentDetail.Payment.AppliedPaymentID, Is.EqualTo(appliedPaymentID), "Should set payment reference info when adding payment");
     }
 
     [Test]
@@ -166,9 +166,9 @@ internal sealed class HandlePaymentTransactionCompletedTest
         await HandlePaymentTransactionCompleted(sp);
         var updatedCaseDetail = GetCaseDetail(sp, caseDetail);
         var updatedFee1Detail = updatedCaseDetail.GetFeeDetailOrDefault(fee1.ID);
-        Assert.That(updatedFee1Detail.Payments.Length, Is.EqualTo(1), "Should add payments for multiple fees");
+        Assert.That(updatedFee1Detail.PaymentDetails.Length, Is.EqualTo(1), "Should add payments for multiple fees");
         var updatedFee2Detail = updatedCaseDetail.GetFeeDetailOrDefault(fee2.ID);
-        Assert.That(updatedFee2Detail.Payments.Length, Is.EqualTo(1), "Should add payments for multiple fees");
+        Assert.That(updatedFee2Detail.PaymentDetails.Length, Is.EqualTo(1), "Should add payments for multiple fees");
     }
 
     [Test]
