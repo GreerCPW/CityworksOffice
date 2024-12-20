@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="XTI_App.Extensions" Version="1.8.42" />
+		<PackageReference Include="XTI_PaymentTransactionAppClient" Version="2.0.3" />
+		<PackageReference Include="XTI_WebApp.Api" Version="1.8.42" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\CPW_ExpandedCityworksDB\CPW_ExpandedCityworksDB.csproj" />
+	</ItemGroup>
+
+</Project>

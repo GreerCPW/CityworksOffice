@@ -1,0 +1,27 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "lib": [ "es2018", "dom" ],
+    "module": "commonjs",
+    "noImplicitAny": false,
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es6",
+    "importHelpers": true,
+    "baseUrl": ".",
+    "typeRoots": [
+      "../../node_modules/@types"
+    ]
+  },
+  "include": [
+    "./**/*.ts",
+    "../Lib/**/*.ts",
+    "../../node_modules/@jasonbenfield/**/*.d.ts"
+  ],
+  "exclude": [
+    "Imports",
+    "node_modules",
+    "wwwroot"
+  ]
+}

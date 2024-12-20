@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Description>$(XtiAppKey) $(XtiVersion)</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="4.9.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="XTI_HubAppClient.WebApp.Extensions" Version="1.4.49" />
+		<PackageReference Include="XTI_WebApp.RCL" Version="1.8.42" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Internal\CityworksOfficeWebApp.ApiControllers\CityworksOfficeWebApp.ApiControllers.csproj" />
+		<ProjectReference Include="..\..\Internal\CPW_ExpandedCityworksDB.SqlServer\CPW_ExpandedCityworksDB.SqlServer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<TypeScriptCompile Include="Scripts\**\*.ts" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Scripts\Lib\Http\" />
+	</ItemGroup>
+</Project>
