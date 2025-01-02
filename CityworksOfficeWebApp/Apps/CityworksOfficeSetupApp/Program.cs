@@ -10,7 +10,7 @@ using CPW_ExpandedCityworksDB;
 using CPW_ExpandedCityworksDB.SqlServer;
 using XTI_Core;
 
-var host = XtiSetupAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
+var host = XtiSetupAppHost.CreateDefault(CityworksOfficeAppKey.Value, args)
     .ConfigureServices((hostContext, services) =>
     {
         services.AddSingleton(_ => AppVersionKey.Current);

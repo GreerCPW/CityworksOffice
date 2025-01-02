@@ -5,7 +5,7 @@ using XTI_PaymentTransactionAppClient;
 
 namespace XTI_CityworksOfficeWebAppApi.Receivables;
 
-internal sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
+public sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
 {
     private const string SourceApp = "PLL";
     private const string VoidStatus = "VOID";

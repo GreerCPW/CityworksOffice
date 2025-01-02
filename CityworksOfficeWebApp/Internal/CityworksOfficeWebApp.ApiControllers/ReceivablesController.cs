@@ -12,6 +12,6 @@ public sealed partial class ReceivablesController : Controller
     [HttpPost]
     public Task<ResultContainer<EmptyActionResult>> AddOrUpdateReceivables(CancellationToken ct)
     {
-        return api.Group("Receivables").Action<EmptyRequest, EmptyActionResult>("AddOrUpdateReceivables").Execute(new EmptyRequest(), ct);
+        return api.Receivables.AddOrUpdateReceivables.Execute(new EmptyRequest(), ct);
     }
 }

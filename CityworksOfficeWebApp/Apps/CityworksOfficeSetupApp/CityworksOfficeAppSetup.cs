@@ -24,7 +24,7 @@ internal sealed class CityworksOfficeAppSetup : IAppSetup
         (
             new SetUserAccessRequest
             (
-                new SystemUserName(CityworksOfficeInfo.AppKey, Environment.MachineName).UserName,
+                new SystemUserName(CityworksOfficeAppKey.Value, Environment.MachineName).UserName,
                 new SetUserAccessRoleRequest
                 (
                     AppKey.WebApp("PaymentTransaction"),

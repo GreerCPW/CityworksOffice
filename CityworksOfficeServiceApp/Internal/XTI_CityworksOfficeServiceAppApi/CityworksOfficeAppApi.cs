@@ -11,10 +11,9 @@ public sealed partial class CityworksOfficeAppApi : AppApiWrapper
         (
             new AppApi
             (
+                sp,
                 CityworksOfficeInfo.AppKey,
                 user,
-                ResourceAccess.AllowAuthenticated()
-                    .WithAllowed(AppRoleName.Admin),
                 ""
             )
         )
