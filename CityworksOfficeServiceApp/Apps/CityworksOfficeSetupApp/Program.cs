@@ -9,7 +9,7 @@ using XTI_Jobs.Abstractions;
 using XTI_Jobs;
 using XTI_ScheduledJobsAppClient;
 
-await XtiSetupAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args)
+await XtiSetupAppHost.CreateDefault(CityworksOfficeAppKey.Value, args)
     .ConfigureServices((hostContext, services) =>
     {
         services.AddSingleton(_ => AppVersionKey.Current);

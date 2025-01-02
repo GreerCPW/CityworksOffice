@@ -1,4 +1,4 @@
-﻿namespace XTI_CityworksOfficeWebAppApi.Home;
+﻿namespace XTI_CityworksOfficeWebAppApiActions.Home;
 
 public sealed class IndexAction : AppAction<EmptyRequest, WebViewResult>
 {

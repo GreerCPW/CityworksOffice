@@ -1,8 +1,8 @@
-using XTI_CityworksOfficeWebAppApiActions.Receivables;
+using XTI_CityworksOfficeServiceAppApiActions.Receivables;
 
 // Generated Code
 #nullable enable
-namespace XTI_CityworksOfficeWebAppApi.Receivables;
+namespace XTI_CityworksOfficeServiceAppApi.Receivables;
 public sealed partial class ReceivablesGroupBuilder
 {
     private readonly AppApiGroup source;

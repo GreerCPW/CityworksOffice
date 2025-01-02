@@ -3,7 +3,7 @@ using CPW_PaymentTransaction.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using XTI_PaymentTransactionAppClient;
 
-namespace XTI_CityworksOfficeWebAppApi.Receivables;
+namespace XTI_CityworksOfficeWebAppApiActions.Receivables;
 
 public sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
 {

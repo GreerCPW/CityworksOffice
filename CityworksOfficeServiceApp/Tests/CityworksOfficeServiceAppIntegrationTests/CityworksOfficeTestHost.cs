@@ -28,7 +28,7 @@ internal sealed class CityworksOfficeTestHost
     {
         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", envName);
         var xtiEnv = XtiEnvironment.Parse(envName);
-        var appKey = CityworksOfficeInfo.AppKey;
+        var appKey = CityworksOfficeAppKey.Value;
         var builder = new XtiHostBuilder(xtiEnv, appKey.Name.DisplayText, appKey.Type.DisplayText, []);
         builder.Services.AddAppServices();
         builder.Services.AddScoped<IAppEnvironmentContext, FakeAppEnvironmentContext>();
