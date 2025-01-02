@@ -1,8 +1,8 @@
 ﻿using XTI_CityworksOfficeAppClient;
 
-namespace XTI_CityworksOfficeServiceAppApi.Receivables;
+namespace XTI_CityworksOfficeServiceAppApiActions.Receivables;
 
-internal sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
+public sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
 {
     private readonly CityworksOfficeAppClient cwOfficeClient;
 

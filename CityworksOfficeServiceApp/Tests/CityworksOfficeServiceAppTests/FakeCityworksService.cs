@@ -133,6 +133,7 @@ public sealed class FakeCityworksService : ICityworksService
                 (
                     ID: dataGroupID,
                     DataGroupDefinitionID: GetDataGroupDefinitionID(groupCode),
+                    CaseType: "",
                     Code: groupCode,
                     Description: groupCode
                 ),
@@ -339,7 +340,9 @@ public sealed class FakeCityworksService : ICityworksService
                 TimeCompleted: DateTimeOffset.MaxValue,
                 ResultCode: "",
                 StartPoint: 0,
-                EndPoint: 0
+                EndPoint: 0,
+                IsAvailable: true,
+                IsCompleted: false
             ),
             TaskTemplate: new
             (

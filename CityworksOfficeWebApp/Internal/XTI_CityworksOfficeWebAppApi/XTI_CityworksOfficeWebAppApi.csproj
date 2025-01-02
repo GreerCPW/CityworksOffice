@@ -1,19 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="XTI_App.Extensions" Version="1.8.42" />
-		<PackageReference Include="XTI_PaymentTransactionAppClient" Version="2.0.3" />
-		<PackageReference Include="XTI_WebApp.Api" Version="1.8.42" />
+	  <ProjectReference Include="..\XTI_CityworksOfficeWebAppApiActions\XTI_CityworksOfficeWebAppApiActions.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\CPW_ExpandedCityworksDB\CPW_ExpandedCityworksDB.csproj" />
+	  <Folder Include="Receivables\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="XTI_ApiGeneratorTask" Version="1.4.0" />
 	</ItemGroup>
 
 </Project>

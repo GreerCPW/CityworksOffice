@@ -24,15 +24,16 @@ internal sealed class CityworksOfficeTestHost
     {
         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", envName);
         var xtiEnv = XtiEnvironment.Parse(envName);
-        var builder = new XtiHostBuilder(xtiEnv, CityworksOfficeInfo.AppKey.Name.DisplayText, CityworksOfficeInfo.AppKey.Type.DisplayText, new string[0]);
+        var appKey = CityworksOfficeAppKey.Value;
+        var builder = new XtiHostBuilder(xtiEnv, appKey.Name.DisplayText, appKey.Type.DisplayText, []);
         builder.Services.AddSingleton<IHostEnvironment>
         (
             _ => new FakeHostEnvironment { EnvironmentName = envName }
         );
         builder.Services.AddFakesForXtiWebApp();
         builder.Services.AddSingleton<XtiFolder>();
-        builder.Services.AddSingleton(sp => sp.GetRequiredService<XtiFolder>().AppDataFolder(CityworksOfficeInfo.AppKey));
-        builder.Services.AddSingleton(_ => CityworksOfficeInfo.AppKey);
+        builder.Services.AddSingleton(sp => sp.GetRequiredService<XtiFolder>().AppDataFolder(appKey));
+        builder.Services.AddSingleton(_ => appKey);
         builder.Services.AddSingleton(_ => AppVersionKey.Current);
         builder.Services.AddCityworksOfficeAppApiServices();
         builder.Services.AddScoped<CityworksOfficeAppApiFactory>();
@@ -62,7 +63,7 @@ internal sealed class CityworksOfficeTestHost
         var apiFactory = sp.GetRequiredService<AppApiFactory>();
         var template = apiFactory.CreateTemplate();
         var appContext = sp.GetRequiredService<FakeAppContext>();
-        var app = appContext.AddApp(template.ToModel());
+        var app = appContext.RegisterApp(template.ToModel());
         appContext.SetCurrentApp(app);
         var userContext = (FakeUserContext)sp.GetRequiredService<ISourceUserContext>();
         var userName = new AppUserName("admin.user");

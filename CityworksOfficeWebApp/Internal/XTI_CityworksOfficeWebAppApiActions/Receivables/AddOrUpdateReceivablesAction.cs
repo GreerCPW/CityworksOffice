@@ -3,9 +3,9 @@ using CPW_PaymentTransaction.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using XTI_PaymentTransactionAppClient;
 
-namespace XTI_CityworksOfficeWebAppApi.Receivables;
+namespace XTI_CityworksOfficeWebAppApiActions.Receivables;
 
-internal sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
+public sealed class AddOrUpdateReceivablesAction : AppAction<EmptyRequest, EmptyActionResult>
 {
     private const string SourceApp = "PLL";
     private const string VoidStatus = "VOID";

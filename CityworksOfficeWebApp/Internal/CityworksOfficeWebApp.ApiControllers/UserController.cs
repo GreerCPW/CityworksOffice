@@ -10,26 +10,26 @@ public sealed partial class UserController : Controller
     }
 
     [HttpPost]
-    public Task<ResultContainer<ResourcePathAccess[]>> GetUserAccess([FromBody] ResourcePath[] model, CancellationToken ct)
+    public Task<ResultContainer<ResourcePathAccess[]>> GetUserAccess([FromBody] ResourcePath[] requestData, CancellationToken ct)
     {
-        return api.Group("User").Action<ResourcePath[], ResourcePathAccess[]>("GetUserAccess").Execute(model, ct);
+        return api.User.GetUserAccess.Execute(requestData, ct);
     }
 
     public async Task<IActionResult> UserProfile(CancellationToken ct)
     {
-        var result = await api.Group("User").Action<EmptyRequest, WebRedirectResult>("UserProfile").Execute(new EmptyRequest(), ct);
+        var result = await api.User.UserProfile.Execute(new EmptyRequest(), ct);
         return Redirect(result.Data!.Url);
     }
 
     [HttpPost]
-    public Task<ResultContainer<LinkModel[]>> GetMenuLinks([FromBody] string model, CancellationToken ct)
+    public Task<ResultContainer<LinkModel[]>> GetMenuLinks([FromBody] string requestData, CancellationToken ct)
     {
-        return api.Group("User").Action<string, LinkModel[]>("GetMenuLinks").Execute(model, ct);
+        return api.User.GetMenuLinks.Execute(requestData, ct);
     }
 
-    public async Task<IActionResult> Logout(LogoutRequest model, CancellationToken ct)
+    public async Task<IActionResult> Logout(LogoutRequest requestData, CancellationToken ct)
     {
-        var result = await api.Group("User").Action<LogoutRequest, WebRedirectResult>("Logout").Execute(model, ct);
+        var result = await api.User.Logout.Execute(requestData, ct);
         return Redirect(result.Data!.Url);
     }
 }

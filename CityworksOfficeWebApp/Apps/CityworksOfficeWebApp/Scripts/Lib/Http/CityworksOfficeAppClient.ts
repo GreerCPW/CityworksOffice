@@ -12,7 +12,7 @@ export class CityworksOfficeAppClient extends AppClient {
 		super(
 			events, 
 			'CityworksOffice', 
-			pageContext.EnvironmentName === 'Production' || pageContext.EnvironmentName === 'Staging' ? 'V2' : 'Current'
+			pageContext.EnvironmentName === 'Production' || pageContext.EnvironmentName === 'Staging' ? 'Current' : 'Current'
 		);
 		this.Home = this.addGroup((evts, resourceUrl) => new HomeGroup(evts, resourceUrl));
 		this.Receivables = this.addGroup((evts, resourceUrl) => new ReceivablesGroup(evts, resourceUrl));

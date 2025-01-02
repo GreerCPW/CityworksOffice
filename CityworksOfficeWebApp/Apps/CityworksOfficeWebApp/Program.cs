@@ -7,7 +7,7 @@ using XTI_App.Api;
 using CPW_ExpandedCityworksDB.SqlServer;
 using XTI_PaymentTransactionAppClient;
 
-var builder = XtiWebAppHost.CreateDefault(CityworksOfficeInfo.AppKey, args);
+var builder = XtiWebAppHost.CreateDefault(CityworksOfficeAppKey.Value, args);
 var xtiEnv = XtiEnvironment.Parse(builder.Environment.EnvironmentName);
 builder.Services.ConfigureXtiCookieAndTokenAuthentication(xtiEnv, builder.Configuration);
 builder.Services.AddScoped<AppApiFactory, CityworksOfficeAppApiFactory>();
