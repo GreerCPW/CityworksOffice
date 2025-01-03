@@ -2,9 +2,9 @@
 using CPW_PaymentTransaction.Events;
 using XTI_Jobs;
 
-namespace XTI_CityworksOfficeServiceAppApi.Jobs;
+namespace XTI_CityworksOfficeServiceAppApiActions.Jobs;
 
-internal sealed class HandlePaymentTransactionCompletedAction : AppAction<EmptyRequest, EmptyActionResult>
+public sealed class HandlePaymentTransactionCompletedAction : AppAction<EmptyRequest, EmptyActionResult>
 {
     private readonly EventMonitorBuilder eventMonitorBuilder;
     private readonly HandlePaymentTransactionCompletedActionFactory jobActionFactory;

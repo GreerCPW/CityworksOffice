@@ -2,7 +2,7 @@
 namespace XTI_CityworksOfficeAppClient;
 public sealed partial class CityworksOfficeAppClient : AppClient
 {
-    public CityworksOfficeAppClient(IHttpClientFactory httpClientFactory, XtiTokenAccessorFactory xtiTokenAccessorFactory, AppClientUrl clientUrl, IAppClientRequestKey requestKey, CityworksOfficeAppClientVersion version) : base(httpClientFactory, xtiTokenAccessorFactory, clientUrl, requestKey, "CityworksOffice", version.Value)
+    public CityworksOfficeAppClient(IHttpClientFactory httpClientFactory, XtiTokenAccessorFactory xtiTokenAccessorFactory, AppClientUrl clientUrl, AppClientOptions options, CityworksOfficeAppClientVersion version) : base(httpClientFactory, xtiTokenAccessorFactory, clientUrl, options, "CityworksOffice", version.Value)
     {
         Home = CreateGroup((_clientFactory, _tokenAccessor, _url, _options) => new HomeGroup(_clientFactory, _tokenAccessor, _url, _options));
         Receivables = CreateGroup((_clientFactory, _tokenAccessor, _url, _options) => new ReceivablesGroup(_clientFactory, _tokenAccessor, _url, _options));

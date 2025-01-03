@@ -5,16 +5,16 @@ public sealed partial class CityworksOfficeAppClientFactory
     private readonly IHttpClientFactory httpClientFactory;
     private readonly XtiTokenAccessorFactory xtiTokenAccessorFactory;
     private readonly AppClientUrl clientUrl;
-    private readonly IAppClientRequestKey requestKey;
+    private readonly AppClientOptions options;
     private readonly CityworksOfficeAppClientVersion version;
-    public CityworksOfficeAppClientFactory(IHttpClientFactory httpClientFactory, XtiTokenAccessorFactory xtiTokenAccessorFactory, AppClientUrl clientUrl, IAppClientRequestKey requestKey, CityworksOfficeAppClientVersion version)
+    public CityworksOfficeAppClientFactory(IHttpClientFactory httpClientFactory, XtiTokenAccessorFactory xtiTokenAccessorFactory, AppClientUrl clientUrl, AppClientOptions options, CityworksOfficeAppClientVersion version)
     {
         this.httpClientFactory = httpClientFactory;
         this.xtiTokenAccessorFactory = xtiTokenAccessorFactory;
         this.clientUrl = clientUrl;
-        this.requestKey = requestKey;
+        this.options = options;
         this.version = version;
     }
 
-    public CityworksOfficeAppClient Create() => new CityworksOfficeAppClient(httpClientFactory, xtiTokenAccessorFactory, clientUrl, requestKey, version);
+    public CityworksOfficeAppClient Create() => new CityworksOfficeAppClient(httpClientFactory, xtiTokenAccessorFactory, clientUrl, options, version);
 }

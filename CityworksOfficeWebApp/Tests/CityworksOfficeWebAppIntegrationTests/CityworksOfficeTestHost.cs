@@ -11,19 +11,18 @@ using XTI_Core.Fakes;
 using XTI_HubAppClient.Extensions;
 using XTI_PaymentTransactionAppClient;
 using XTI_Secrets.Extensions;
-using XTI_TempLog;
-using XTI_TempLog.Fakes;
+using XTI_TempLog.Abstractions;
 using XTI_WebApp.Api;
 
 namespace CityworksOfficeWebAppIntegrationTests;
 
 internal sealed class CityworksOfficeTestHost
 {
-    public async Task<IServiceProvider> Setup(string envName, Action<IServiceCollection>? configure = null)
+    public Task<IServiceProvider> Setup(string envName, Action<IServiceCollection>? configure = null)
     {
         Environment.SetEnvironmentVariable("DOTNET_ENVIRONMENT", envName);
         var xtiEnv = XtiEnvironment.Parse(envName);
-        var appKey = CityworksOfficeInfo.AppKey;
+        var appKey = CityworksOfficeAppKey.Value;
         var builder = new XtiHostBuilder(xtiEnv, appKey.Name.DisplayText, appKey.Type.DisplayText, []);
         builder.Services.AddAppServices();
         builder.Services.AddScoped<IAppEnvironmentContext, FakeAppEnvironmentContext>();
@@ -70,13 +69,13 @@ internal sealed class CityworksOfficeTestHost
         var apiFactory = sp.GetRequiredService<AppApiFactory>();
         var template = apiFactory.CreateTemplate();
         var appContext = sp.GetRequiredService<FakeAppContext>();
-        var app = appContext.AddApp(template.ToModel());
+        var app = appContext.RegisterApp(template.ToModel());
         appContext.SetCurrentApp(app);
         var userContext = (FakeUserContext)sp.GetRequiredService<ISourceUserContext>();
         var userName = new AppUserName("admin.user");
         userContext.AddUser(userName);
         userContext.SetCurrentUser(userName);
         userContext.SetUserRoles(AppRoleName.Admin);
-        return sp;
+        return Task.FromResult(sp);
     }
 }

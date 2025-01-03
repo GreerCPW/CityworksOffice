@@ -1,9 +1,8 @@
-﻿namespace XTI_CityworksOfficeWebAppApi;
-
+// Generated Code
+namespace XTI_CityworksOfficeWebAppApi;
 public sealed class CityworksOfficeAppApiFactory : AppApiFactory
 {
     private readonly IServiceProvider sp;
-
     public CityworksOfficeAppApiFactory(IServiceProvider sp)
     {
         this.sp = sp;
@@ -11,6 +10,5 @@ public sealed class CityworksOfficeAppApiFactory : AppApiFactory
 
     public new CityworksOfficeAppApi Create(IAppApiUser user) => (CityworksOfficeAppApi)base.Create(user);
     public new CityworksOfficeAppApi CreateForSuperUser() => (CityworksOfficeAppApi)base.CreateForSuperUser();
-
-    protected override IAppApi _Create(IAppApiUser user) => new CityworksOfficeAppApi(user, sp);
+    protected override IAppApi _Create(IAppApiUser user) => new CityworksOfficeAppApiBuilder(sp, user).Build();
 }
