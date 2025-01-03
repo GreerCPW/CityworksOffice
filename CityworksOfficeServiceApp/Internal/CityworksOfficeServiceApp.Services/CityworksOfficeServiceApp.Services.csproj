@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CPW_Cityworks.Abstractions" Version="1.0.105" />
+    <PackageReference Include="CPW_Cityworks.Abstractions" Version="1.1.0" />
     <PackageReference Include="XTI_WebAppClient" Version="1.8.52" />
   </ItemGroup>
 

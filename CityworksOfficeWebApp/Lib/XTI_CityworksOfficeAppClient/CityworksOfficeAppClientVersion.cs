@@ -12,7 +12,7 @@ public sealed partial class CityworksOfficeAppClientVersion
         string value;
         if (hostEnv.IsProduction())
         {
-            value = "Current";
+            value = "V3";
         }
         else
         {
